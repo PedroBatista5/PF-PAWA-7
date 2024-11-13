@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/layout";
+import Layout from "./components/navbar";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Registro from "./pages/register";
@@ -14,7 +14,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path= "login" index element={<Login />} />
+          <Route path= "login" element={<Login />} />
           <Route path="home" element={<Home />} />
           <Route path="register" element={<Registro/>}/>
           <Route path="perfil" element={<Perfil/>}/>
