@@ -1,6 +1,6 @@
-// Login.js
 import React, { useState } from 'react';
-import './layout.css';
+import '../styles/layout.css';
+import '../styles/buttoninput.css';
 import Input from '../components/input';
 import BtForms from '../components/BtForms';
 

@@ -1,4 +1,4 @@
-import './layout.css';
+import '../styles/layout.css';
 const Procurar = () => {
     return <h1>Procurar</h1>;
   };

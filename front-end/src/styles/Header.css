@@ -1,0 +1,10 @@
+.header {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    padding: 100px 0;
+    background-color: #b0b0b0; /* Cinza para simular o fundo da imagem */
+    position: relative;
+  }
+  

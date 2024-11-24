@@ -1,7 +1,13 @@
-import './layout.css';
+import React from "react";
+import "../styles/layout.css";
+import HomePage from "../components/Homepage"; 
 
 const Home = () => {
-    return <h1>Home</h1>;
-  };
-  
-  export default Home;
+  return (
+    <div>
+      <HomePage /> 
+    </div>
+  );
+};
+
+export default Home;

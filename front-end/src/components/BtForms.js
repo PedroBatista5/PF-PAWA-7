@@ -1,4 +1,3 @@
-// BtForms.js
 import React from 'react';
 
 function BtForms({ text, onClick }) {

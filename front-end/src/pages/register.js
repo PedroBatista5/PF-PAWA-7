@@ -1,4 +1,4 @@
-import './layout.css';
+import '../styles/layout.css';
 const Registro = () => {
     return <h1>Registro</h1>;
   };
