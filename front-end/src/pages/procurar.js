@@ -1,6 +1,13 @@
+import React from "react";
 import '../styles/layout.css';
-const Procurar = () => {
-    return <h1>Procurar</h1>;
-  };
-  
-  export default Procurar;
+import Searchpage from "../components/searchpage";
+
+const App = () => {
+  return (
+    <div className="app">
+      <Searchpage />
+    </div>
+  );
+};
+
+export default App;

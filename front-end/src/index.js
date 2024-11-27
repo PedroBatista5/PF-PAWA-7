@@ -6,7 +6,7 @@ import Login from "./pages/login";
 import Registro from "./pages/register";
 import Perfil from "./pages/perfil";
 import Procurar from "./pages/procurar";
-import Projetos from "./pages/projetos";
+
 import './App.css';
 
 export default function App() {
@@ -19,7 +19,6 @@ export default function App() {
           <Route path="register" element={<Registro/>}/>
           <Route path="perfil" element={<Perfil/>}/>
           <Route path="procurar" element={<Procurar/>}/>
-          <Route path="projetos" element={<Projetos/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
