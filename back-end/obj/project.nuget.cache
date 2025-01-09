@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Gmi+W9MfDAw=",
+  "dgSpecHash": "H3IiEt/Wlpw=",
   "success": true,
   "projectFilePath": "C:\\Users\\Usuario\\Desktop\\pawa-pf\\PF-PAWA-7\\back-end\\back-end.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Usuario\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Usuario\\.nuget\\packages\\bouncycastle.cryptography\\2.3.1\\bouncycastle.cryptography.2.3.1.nupkg.sha512",
     "C:\\Users\\Usuario\\.nuget\\packages\\google.protobuf\\3.26.1\\google.protobuf.3.26.1.nupkg.sha512",
     "C:\\Users\\Usuario\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

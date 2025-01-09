@@ -4,13 +4,13 @@ import '../styles/buttoninput.css';
 import Input from '../components/input';
 import BtForms from '../components/BtForms';
 
-const Registro = () => {
+const Register = () => {
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegistro = () => {
+  const handleRegistro = async () => {
     if (!nome || !sobrenome || !email || !password) {
       alert('Por favor, preencha todos os campos.');
       return;
@@ -26,13 +26,25 @@ const Registro = () => {
       alert('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
+    
+    try {
+      const response = await fetch('http://localhost:5289/api/Utilizador/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nome, sobrenome, email, password }),
+      });
 
-    console.log('Nome:', nome);
-    console.log('Sobrenome:', sobrenome);
-    console.log('Email:', email);
-    console.log('Senha:', password);
-
-    alert('Registro concluído com sucesso!');
+      if (response.ok) {
+        alert('Registro bem-sucedido!');
+      } else {
+        const errorData = await response.json();
+        alert(`Erro: ${errorData.message}`);
+      }
+    } catch (error) {
+      alert('Erro de rede. Por favor, tente novamente mais tarde.');
+    }
   };
 
   return (
@@ -73,4 +85,4 @@ const Registro = () => {
   );
 };
 
-export default Registro;
+export default Register;
