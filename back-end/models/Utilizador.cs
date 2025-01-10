@@ -4,7 +4,7 @@ namespace Backend.Models
 {
     public class Utilizador
     {
-        public int Id { get; set; }
+        public int Id_utilizador { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -23,5 +23,9 @@ namespace Backend.Models
         [MinLength(6)]
         [StringLength(200)]
         public string Password { get; set; }
+
+        public int InfoUserId { get; set; }
+
+        public InfoUser InfoUser { get; set; }
     }
 }
