@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/navbar";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -9,19 +10,22 @@ import Procurar from "./pages/procurar";
 
 import './App.css';
 
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path= "login" element={<Login />} />
-          <Route path="home" element={<Home />} />
-          <Route path="register" element={<Registro/>}/>
-          <Route path="perfil" element={<Perfil/>}/>
-          <Route path="procurar" element={<Procurar/>}/>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path= "login" element={<Login />} />
+            <Route path="home" element={<Home />} />
+            <Route path="register" element={<Registro/>}/>
+            <Route path="perfil" element={<Perfil/>}/>
+            <Route path="procurar" element={<Procurar/>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

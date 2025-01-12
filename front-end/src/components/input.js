@@ -1,15 +1,17 @@
-
 import React from 'react';
+import '../styles/layout.css';
 
 function Input({ type = "text", placeholder, value, onChange }) {
   return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      className="input-field"
-    />
+    <div className="form-group">
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className="input-field"
+      />
+    </div>
   );
 }
 

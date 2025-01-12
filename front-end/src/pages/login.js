@@ -1,14 +1,17 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; 
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';  
 import '../styles/layout.css';
 import '../styles/buttoninput.css';
 import Input from '../components/input';
-import BtForms from '../components/BtForms';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext); 
 
   const handleLogin = async () => {
     try {
@@ -19,25 +22,24 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
- 
+
       const data = await response.json();
- 
+
       if (response.ok) {
-        console.log('Login bem-sucedido:', data);
+        login(); 
+        navigate('/');
       } else {
-        // Exibe a mensagem de erro retornada pela API
         setErrorMessage(data.Message || 'Erro ao realizar login');
       }
     } catch (error) {
       setErrorMessage('Erro de conexão ou outra falha.');
-      console.error('Erro no login:', error);
     }
   };
- 
 
   return (
     <div className="login-container">
       <div className="login-form">
+        <h1>Login</h1>
         <label>Email</label>
         <Input
           type="email"
@@ -45,16 +47,17 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <label>Password</label>
+        <label>Senha</label>
         <Input
           type="password"
           placeholder="Digite sua senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <BtForms text="Sign In" onClick={handleLogin} />
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-        <p><a href="#">Forgot password?</a></p>
+        <button onClick={handleLogin} className="button-form">
+          Login
+        </button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
     </div>
   );
