@@ -36,11 +36,16 @@ const Register = () => {
         body: JSON.stringify({ nome, sobrenome, email, password }),
       });
 
+      const result = await response.json();
+
       if (response.ok) {
         alert('Registro bem-sucedido!');
+        setNome('');
+        setSobrenome('');
+        setEmail('');
+        setPassword('');
       } else {
-        const errorData = await response.json();
-        alert(`Erro: ${errorData.message}`);
+        alert(`Erro: ${result.message}`);
       }
     } catch (error) {
       alert('Erro de rede. Por favor, tente novamente mais tarde.');

@@ -18,14 +18,21 @@ namespace Backend.Services
         {
             if (await _context.Utilizadores.AnyAsync(u => u.Email == utilizador.Email))
             {
-                return (false, "O email já está em uso.");
+                return (false, "O email informado já está em uso.");
             }
 
             utilizador.Password = BCrypt.Net.BCrypt.HashPassword(utilizador.Password); 
-            await _context.Utilizadores.AddAsync(utilizador);
-            await _context.SaveChangesAsync();
 
-            return (true, "Usuário registrado com sucesso.");
+            try
+            {
+                await _context.Utilizadores.AddAsync(utilizador);
+                await _context.SaveChangesAsync();
+                return (true, "Utilizador registrado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Erro ao salvar no banco de dados: {ex.Message}");
+            }
         }
 
         public async Task<List<Utilizador>> ObterTodosUtilizadoresAsync()

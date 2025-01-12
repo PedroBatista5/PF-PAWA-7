@@ -17,7 +17,7 @@ namespace Backend.Data
 
             modelBuilder.Entity<Utilizador>(entity =>
             {
-                entity.HasKey(u => u.Id_utilizador); 
+                entity.HasKey(u => u.Id_utilizador);
                 entity.Property(u => u.Id_utilizador).ValueGeneratedOnAdd();
 
                 entity.Property(u => u.Nome).IsRequired().HasMaxLength(100);
@@ -25,30 +25,32 @@ namespace Backend.Data
                 entity.Property(u => u.Email).IsRequired().HasMaxLength(200);
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(200);
-        
+
+                entity.Property(u => u.InfoUserId).IsRequired(false); 
+                
                 entity.HasOne(u => u.InfoUser)
-                      .WithMany(i => i.Utilizadores)
-                      .HasForeignKey(u => u.InfoUserId) 
-                      .OnDelete(DeleteBehavior.Cascade);
+                    .WithMany(i => i.Utilizadores)
+                    .HasForeignKey(u => u.InfoUserId)
+                    .OnDelete(DeleteBehavior.SetNull);  
             });
 
             modelBuilder.Entity<InfoUser>(entity =>
             {
-                entity.HasKey(i => i.Id_info); 
+                entity.HasKey(i => i.Id_info);
                 entity.Property(i => i.Id_info).ValueGeneratedOnAdd();
 
                 entity.Property(i => i.Descricao_info).HasMaxLength(500);
                 entity.Property(i => i.Servicos).HasMaxLength(200);
-
+                
                 entity.HasOne(i => i.Projetos)
-                      .WithMany(p => p.InfoUsers)
-                      .HasForeignKey(i => i.ProjetosId) 
-                      .OnDelete(DeleteBehavior.SetNull);
+                    .WithMany(p => p.InfoUsers)
+                    .HasForeignKey(i => i.ProjetosId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<Projetos>(entity =>
             {
-                entity.HasKey(p => p.Id_projetos); 
+                entity.HasKey(p => p.Id_projetos);
                 entity.Property(p => p.Id_projetos).ValueGeneratedOnAdd();
 
                 entity.Property(p => p.titulo_projetos).IsRequired().HasMaxLength(100);
@@ -56,5 +58,6 @@ namespace Backend.Data
                 entity.Property(p => p.descricao_projeto).IsRequired().HasMaxLength(200);
             });
         }
+
     }
 }

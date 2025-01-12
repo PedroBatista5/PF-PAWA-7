@@ -1,49 +1,39 @@
-using Microsoft.AspNetCore.Mvc;
 using Backend.Models;
 using Backend.Services;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Backend.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class UtilizadorController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UtilizadorController : ControllerBase
+    private readonly UtilizadorService _utilizadorService;
+
+    public UtilizadorController(UtilizadorService utilizadorService)
     {
-        private readonly UtilizadorService _service;
+        _utilizadorService = utilizadorService;
+    }
 
-        public UtilizadorController(UtilizadorService service)
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        return Ok(new { Message = "Endpoint funcionando!" });
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] Utilizador utilizador)
+    {
+        if (utilizador == null)
         {
-            _service = service;
+            return BadRequest(new { Message = "Dados inválidos." });
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Utilizador utilizador)
+        var (success, message) = await _utilizadorService.RegistrarUtilizadorAsync(utilizador);
+
+        if (success)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Dados inválidos.");
-            }
-
-            var (success, message) = await _service.RegistrarUtilizadorAsync(utilizador);
-
-            if (!success)
-            {
-                return BadRequest(message);
-            }
-
-            return Ok(new { message });
+            return Ok(new { Message = message });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var utilizadores = await _service.ObterTodosUtilizadoresAsync();
-
-            if (utilizadores == null || !utilizadores.Any())
-            {
-                return NoContent();
-            }
-
-            return Ok(utilizadores);
-        }
+        return BadRequest(new { Message = message });
     }
 }
