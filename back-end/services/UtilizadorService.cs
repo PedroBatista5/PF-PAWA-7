@@ -1,7 +1,7 @@
-using Backend.Data;
 using Backend.Models;
-using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
+using Backend.Data;
 
 namespace Backend.Services
 {
@@ -14,30 +14,40 @@ namespace Backend.Services
             _context = context;
         }
 
-        public async Task<(bool Success, string Message)> RegistrarUtilizadorAsync(Utilizador utilizador)
+        public async Task<(bool success, string message)> LoginAsync(string email, string password)
         {
-            if (await _context.Utilizadores.AnyAsync(u => u.Email == utilizador.Email))
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (utilizador == null)
             {
-                return (false, "O email informado já está em uso.");
+                return (false, "Usuário não encontrado.");
             }
 
-            utilizador.Password = BCrypt.Net.BCrypt.HashPassword(utilizador.Password); 
+            if (!BCrypt.Net.BCrypt.Verify(password, utilizador.Password))
+            {
+                return (false, "Senha inválida.");
+            }
 
-            try
-            {
-                await _context.Utilizadores.AddAsync(utilizador);
-                await _context.SaveChangesAsync();
-                return (true, "Utilizador registrado com sucesso.");
-            }
-            catch (Exception ex)
-            {
-                return (false, $"Erro ao salvar no banco de dados: {ex.Message}");
-            }
+            return (true, "Login bem-sucedido.");
         }
 
-        public async Task<List<Utilizador>> ObterTodosUtilizadoresAsync()
+        public async Task<(bool success, string message)> RegistrarUtilizadorAsync(Utilizador utilizador)
         {
-            return await _context.Utilizadores.ToListAsync();
+            var emailExists = await _context.Utilizadores
+                .AnyAsync(u => u.Email == utilizador.Email);
+
+            if (emailExists)
+            {
+                return (false, "E-mail já registrado.");
+            }
+
+            utilizador.Password = BCrypt.Net.BCrypt.HashPassword(utilizador.Password);
+
+            await _context.Utilizadores.AddAsync(utilizador);
+            await _context.SaveChangesAsync();
+
+            return (true, "Usuário registrado com sucesso.");
         }
     }
 }
