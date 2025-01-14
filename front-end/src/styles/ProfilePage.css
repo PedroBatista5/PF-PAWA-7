@@ -1,52 +1,169 @@
+/* Estilo geral da página de perfil */
 .profile-page {
-    background-color: #1c1c1c;
-    color: white;
-    min-height: 100vh; 
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    padding-top: 20px;
-  }
+  background-color: #1c1c1c;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
 
-  .profile-header {
-    display: flex;
-    padding: 10px;
+.profile-header {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-image-container {
+  text-align: center;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  padding: 35px;
+  border-radius: 50%;
+}
+
+.profile-name {
+  margin-top: 10px;
+  font-size: 1.2rem;
+}
+
+.profile-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-menu p {
+  margin: 10px 0;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Estilo da seção de projetos */
+.projects-section {
+  margin-top: 20px;
+}
+
+.projects-section h2 {
+  font-size: 1.5rem;
+  color: white;
+}
+
+/* Estilo do popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: white;
+  color: black; 
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+}
+
+.popup h2 {
+  margin-bottom: 1rem;
+}
+
+.popup input {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.popup-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-buttons button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Outros estilos gerais */
+ul {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  color: white;
+}
+
+nav {
+  background-color: rgb(71, 71, 71);
+}
+
+li {
+  padding: 15px;
+  display: inline-block;
+}
+
+li a {
+  color: white;
+  text-decoration: none;
+  text-align: center;
+}
+
+li a:visited {
+  color: white;
+}
+
+li a:hover {
+  text-decoration: none;
+}
+
+li:active,
+li:focus {
+  background-color: rgba(128, 128, 128, 0.5);
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  ul {
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
   }
-  
 
-  .profile-image-container {
+  .left-nav,
+  .right-nav {
+    width: 100%;
     text-align: center;
   }
-  .profile-image {
-    width: 100px;
-    padding: 35px;
-    height: 100px;
-    border-radius: 50%;
-  }
-  .profile-name {
-    margin-top: 10px;
-    font-size: 1.2rem;
-  }
-  
 
-  .profile-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  li {
+    width: 100%;
+    text-align: center;
   }
-  .profile-menu p {
-    margin: 10px 0;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+}
 
-  .projects-section {
-    margin-top: 20px;
-  }
-  .projects-section h2 {
-    font-size: 1.5rem;
-    color: white;
-  }
-  

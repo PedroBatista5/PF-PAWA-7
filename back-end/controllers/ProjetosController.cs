@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Backend.Data;
-using Backend.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +21,8 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Projetos>>> GetProjetos()
         {
-            return await _context.Projetos.Include(p => p.InfoUsers).ToListAsync();
+            // Remova a inclusão do InfoUsers
+            return await _context.Projetos.ToListAsync();
         }
 
         // GET: api/Projetos/5
@@ -31,8 +30,7 @@ namespace Backend.Controllers
         public async Task<ActionResult<Projetos>> GetProjetos(int id)
         {
             var projetos = await _context.Projetos
-                .Include(p => p.InfoUsers)
-                .FirstOrDefaultAsync(p => p.Id_projetos == id);
+                .FirstOrDefaultAsync(p => p.Id_projetos == id);  // Remover a inclusão do InfoUsers
 
             if (projetos == null)
             {

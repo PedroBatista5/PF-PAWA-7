@@ -1,7 +1,5 @@
-using Backend.Models;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
-using Backend.Data;
 
 namespace Backend.Services
 {
@@ -14,26 +12,9 @@ namespace Backend.Services
             _context = context;
         }
 
-        public async Task<(bool success, string message)> LoginAsync(string email, string password)
-        {
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            if (utilizador == null)
-            {
-                return (false, "Usuário não encontrado.");
-            }
-
-            if (!BCrypt.Net.BCrypt.Verify(password, utilizador.Password))
-            {
-                return (false, "Senha inválida.");
-            }
-
-            return (true, "Login bem-sucedido.");
-        }
-
         public async Task<(bool success, string message)> RegistrarUtilizadorAsync(Utilizador utilizador)
         {
+            // Verificar se o email já existe
             var emailExists = await _context.Utilizadores
                 .AnyAsync(u => u.Email == utilizador.Email);
 
@@ -42,12 +23,36 @@ namespace Backend.Services
                 return (false, "E-mail já registrado.");
             }
 
+            // Verificar se o tipo de utilizador foi fornecido e é válido
+            if (string.IsNullOrEmpty(utilizador.TipoUtilizador) || 
+                (utilizador.TipoUtilizador != "Freelancer" && utilizador.TipoUtilizador != "Cliente"))
+            {
+                return (false, "Tipo de utilizador inválido. Deve ser 'Freelancer' ou 'Cliente'.");
+            }
+
+            // Criptografar a senha
             utilizador.Password = BCrypt.Net.BCrypt.HashPassword(utilizador.Password);
 
-            await _context.Utilizadores.AddAsync(utilizador);
-            await _context.SaveChangesAsync();
+            // Caso o utilizador seja Freelancer, podemos adicionar campos adicionais diretamente no Utilizador
+            if (utilizador.TipoUtilizador == "Freelancer")
+            {
+                // Preenchendo os campos adicionais diretamente no modelo Utilizador
+                utilizador.Descricao_info = "";   // Campo vazio
+                utilizador.Servicos = "";         // Campo vazio
+                utilizador.Imagem_perfil = null;  // Campo vazio (ou imagem padrão)
+            }
 
-            return (true, "Usuário registrado com sucesso.");
+            // Adicionar o usuário à tabela Utilizadores
+            await _context.Utilizadores.AddAsync(utilizador);
+            await _context.SaveChangesAsync(); // Salva o usuário
+
+            return (true, "Usuário e informações do perfil criados com sucesso.");
+        }
+
+        internal async Task<(bool success, string message)> LoginAsync(string email, string password)
+        {
+            // Implementar a lógica de login (não implementado no código atual)
+            throw new NotImplementedException();
         }
     }
 }

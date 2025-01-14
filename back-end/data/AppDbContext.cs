@@ -1,63 +1,45 @@
 using Microsoft.EntityFrameworkCore;
-using Backend.Models;
 
-namespace Backend.Data
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Utilizador> Utilizadores { get; set; }
+    public DbSet<Projetos> Projetos { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        base.OnModelCreating(modelBuilder);
 
-        public DbSet<Utilizador> Utilizadores { get; set; }
-        public DbSet<InfoUser> InfoUsers { get; set; }
-        public DbSet<Projetos> Projetos { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        modelBuilder.Entity<Utilizador>(entity =>
         {
-            base.OnModelCreating(modelBuilder);
+            entity.HasKey(u => u.Id_utilizador);
+            entity.Property(u => u.Id_utilizador).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Utilizador>(entity =>
-            {
-                entity.HasKey(u => u.Id_utilizador);
-                entity.Property(u => u.Id_utilizador).ValueGeneratedOnAdd();
+            entity.Property(u => u.Nome).IsRequired().HasMaxLength(100);
+            entity.Property(u => u.Sobrenome).IsRequired().HasMaxLength(100);
+            entity.Property(u => u.Email).IsRequired().HasMaxLength(200);
+            entity.HasIndex(u => u.Email).IsUnique();
+            entity.Property(u => u.Password).IsRequired().HasMaxLength(200);
 
-                entity.Property(u => u.Nome).IsRequired().HasMaxLength(100);
-                entity.Property(u => u.Sobrenome).IsRequired().HasMaxLength(100);
-                entity.Property(u => u.Email).IsRequired().HasMaxLength(200);
-                entity.HasIndex(u => u.Email).IsUnique();
-                entity.Property(u => u.Password).IsRequired().HasMaxLength(200);
+            entity.Property(u => u.TipoUtilizador).IsRequired(); // Adicionando a configuração para o tipo de utilizador
 
-                entity.Property(u => u.InfoUserId).IsRequired(false); 
-                
-                entity.HasOne(u => u.InfoUser)
-                    .WithMany(i => i.Utilizadores)
-                    .HasForeignKey(u => u.InfoUserId)
-                    .OnDelete(DeleteBehavior.SetNull);  
-            });
+            // Campos integrados de InfoUser
+            entity.Property(u => u.Descricao_info).HasMaxLength(500); // Descrição do Freelancer
+            entity.Property(u => u.Servicos).HasMaxLength(200); // Serviços do Freelancer
+            entity.Property(u => u.Imagem_perfil).IsRequired(false); // Imagem de perfil do Freelancer
 
-            modelBuilder.Entity<InfoUser>(entity =>
-            {
-                entity.HasKey(i => i.Id_info);
-                entity.Property(i => i.Id_info).ValueGeneratedOnAdd();
+            // Não há mais a relação com a InfoUser, pois seus campos estão agora na tabela Utilizadores
+        });
 
-                entity.Property(i => i.Descricao_info).HasMaxLength(500);
-                entity.Property(i => i.Servicos).HasMaxLength(200);
-                
-                entity.HasOne(i => i.Projetos)
-                    .WithMany(p => p.InfoUsers)
-                    .HasForeignKey(i => i.ProjetosId)
-                    .OnDelete(DeleteBehavior.SetNull);
-            });
+        modelBuilder.Entity<Projetos>(entity =>
+        {
+            entity.HasKey(p => p.Id_projetos);
+            entity.Property(p => p.Id_projetos).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Projetos>(entity =>
-            {
-                entity.HasKey(p => p.Id_projetos);
-                entity.Property(p => p.Id_projetos).ValueGeneratedOnAdd();
-
-                entity.Property(p => p.titulo_projetos).IsRequired().HasMaxLength(100);
-                entity.Property(p => p.preco).IsRequired();
-                entity.Property(p => p.descricao_projeto).IsRequired().HasMaxLength(200);
-            });
-        }
-
+            entity.Property(p => p.Titulo_projetos).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.Preco).IsRequired();
+            entity.Property(p => p.Descricao_projeto).IsRequired().HasMaxLength(200);
+        });
     }
 }
