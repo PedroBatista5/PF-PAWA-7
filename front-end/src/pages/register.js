@@ -12,7 +12,6 @@ const Register = () => {
   const [TipoUtilizador, setTipoUtilizador] = useState('');
   const [Descricao_info, setDescricaoInfo] = useState('');
   const [Servicos, setServicos] = useState('');
-  const [Imagem_perfil, setImagemPerfil] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegistro = async () => {
@@ -55,9 +54,6 @@ const Register = () => {
     if (TipoUtilizador === "Freelancer") {
       formData.append('Descricao_info', Descricao_info);
       formData.append('Servicos', Servicos);
-      if (Imagem_perfil) {
-        formData.append('Imagem_perfil', Imagem_perfil);
-      }
     }
 
     try {
@@ -72,7 +68,7 @@ const Register = () => {
 
       if (response.ok) {
         alert('Conta criada com sucesso!');
-        window.location.href = '/';
+        window.location.href = '/login';
       } else {
         alert(`Erro: ${result.Message || 'Erro inesperado.'}`);
       }
@@ -142,11 +138,6 @@ const Register = () => {
               placeholder="Digite seus serviços"
               value={Servicos}
               onChange={(e) => setServicos(e.target.value)}
-            />
-            <label>Imagem de Perfil</label>
-            <input
-              type="file"
-              onChange={(e) => setImagemPerfil(e.target.files[0])}
             />
           </div>
         )}

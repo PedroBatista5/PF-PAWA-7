@@ -5,10 +5,7 @@ public class Utilizador
     public string Sobrenome { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string TipoUtilizador { get; set; } // "Freelancer" ou "Cliente"
-
-    // Campos opcionais para Freelancer
-    public string? Descricao_info { get; set; }
-    public string? Servicos { get; set; }
-    public string? Imagem_perfil { get; set; }
+    public string TipoUtilizador { get; set; } 
+    public string? Descricao_info { get; set; }= "Descrição padrão para freelancer.";
+    public string? Servicos { get; set; } = "Serviços não especificados.";
 }

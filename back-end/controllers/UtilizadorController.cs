@@ -1,6 +1,7 @@
 using Backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Backend.Controllers
         }
         
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromForm] Utilizador utilizador, [FromForm] IFormFile? imagemPerfil)
+        public async Task<IActionResult> Register([FromForm] Utilizador utilizador)
         {
             if (utilizador == null)
             {
@@ -35,39 +36,10 @@ namespace Backend.Controllers
                 return BadRequest(new { Message = "Tipo de utilizador inválido. Deve ser 'Freelancer' ou 'Cliente'." });
             }
 
-            // Validações específicas para Freelancer
-            if (utilizador.TipoUtilizador == "Freelancer")
+            // Remova referências à imagem
+            if (utilizador.TipoUtilizador == "Freelancer" && (string.IsNullOrEmpty(utilizador.Descricao_info) || string.IsNullOrEmpty(utilizador.Servicos)))
             {
-                if (string.IsNullOrEmpty(utilizador.Descricao_info) || string.IsNullOrEmpty(utilizador.Servicos))
-                {
-                    return BadRequest(new { Message = "Campos adicionais de Freelancer são obrigatórios." });
-                }
-
-                if (imagemPerfil == null)
-                {
-                    return BadRequest(new { Message = "A imagem de perfil é obrigatória para Freelancers." });
-                }
-
-                // Definir um diretório válido para salvar a imagem
-                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                // Criar o diretório caso não exista
-                if (!Directory.Exists(uploadDirectory))
-                {
-                    Directory.CreateDirectory(uploadDirectory);
-                }
-
-                // Caminho completo para salvar a imagem
-                var imagePath = Path.Combine(uploadDirectory, imagemPerfil.FileName);
-
-                // Salvar a imagem no diretório
-                using (var stream = new FileStream(imagePath, FileMode.Create))
-                {
-                    await imagemPerfil.CopyToAsync(stream);
-                }
-
-                // Definir o caminho da imagem no banco de dados
-                utilizador.Imagem_perfil = Path.Combine("uploads", imagemPerfil.FileName);  // Caminho relativo
+                return BadRequest(new { Message = "Campos adicionais de Freelancer são obrigatórios." });
             }
 
             var (success, message) = await _utilizadorService.RegistrarUtilizadorAsync(utilizador);
@@ -99,6 +71,31 @@ namespace Backend.Controllers
 
             return Unauthorized(new { Message = message });
         }
+
+        [HttpPost("updateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateModel model)
+        {
+            var user = await _utilizadorService.ObterUsuarioPorNomeAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return BadRequest("Usuário não encontrado.");
+            }
+
+            user.Descricao_info = model.Info;
+            user.Servicos = model.Servicos;
+
+            var (success, message) = await _utilizadorService.AtualizarUsuarioAsync(user);
+
+            if (success)
+            {
+                return Ok("Perfil atualizado com sucesso.");
+            }
+
+            return BadRequest("Erro ao atualizar o perfil.");
+        }
+
+
     }
 
     public class LoginModel
@@ -106,4 +103,12 @@ namespace Backend.Controllers
         public string Email { get; set; }
         public string Password { get; set; }
     }
+
+    public class ProfileUpdateModel
+    {
+        public string Info { get; set; }
+        public string Servicos { get; set; }
+    }
+
+
 }

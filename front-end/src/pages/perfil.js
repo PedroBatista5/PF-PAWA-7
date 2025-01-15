@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/ProfilePage.css";
 import Button from "../components/BtForms";
 
 const ProfilePage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://via.placeholder.com/150");
   const [formData, setFormData] = useState({
     nome: "",
     info: "",
@@ -14,23 +13,47 @@ const ProfilePage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch("http://localhost:5289/api/utilizador/updateProfile", {
+          method: "POST", // Use POST method
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            info: formData.info,
+            servicos: formData.servicos,
+          }),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setFormData({
+            nome: data.nome,
+            info: data.info,
+            precos: data.precos,
+            servicos: data.servicos,
+            nota: data.nota,
+          });
+        } else {
+          alert("Erro ao carregar os dados do perfil.");
+        }
+      } catch (error) {
+        console.error("Erro ao carregar os dados:", error);
+        alert("Erro de conexão com o servidor.");
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
   const handleButtonClick = () => {
     setIsPopupOpen(true);
   };
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProfileImage(event.target.result); 
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleChange = (e) => {
@@ -50,7 +73,6 @@ const ProfilePage = () => {
         },
         body: JSON.stringify({
           ...formData,
-          profileImage, 
         }),
       });
 
@@ -72,7 +94,6 @@ const ProfilePage = () => {
     <div className="profile-page">
       <div className="profile-header">
         <div className="profile-image-container">
-          <img src={profileImage} alt="Perfil" className="profile-image" />
           <p className="profile-name">{formData.nome || "NOME"}</p>
         </div>
 
@@ -93,8 +114,6 @@ const ProfilePage = () => {
         <div className="popup-overlay">
           <div className="popup">
             <h2>Editar Informações</h2>
-            <p>Foto de Perfil</p>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
             <p>Descrição</p>
             <input
               type="text"
