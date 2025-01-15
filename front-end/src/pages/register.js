@@ -5,67 +5,65 @@ import Input from '../components/input';
 import BtForms from '../components/BtForms';
 
 const Register = () => {
-  const [nome, setNome] = useState('');
-  const [sobrenome, setSobrenome] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [tipoUtilizador, setTipoUtilizador] = useState('');
-  const [descricaoInfo, setDescricaoInfo] = useState('');
-  const [servicos, setServicos] = useState('');
-  const [imagemPerfil, setImagemPerfil] = useState(null);
+  const [Nome, setNome] = useState('');
+  const [Sobrenome, setSobrenome] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
+  const [TipoUtilizador, setTipoUtilizador] = useState('');
+  const [Descricao_info, setDescricaoInfo] = useState('');
+  const [Servicos, setServicos] = useState('');
+  const [Imagem_perfil, setImagemPerfil] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegistro = async () => {
-    if (!nome || !sobrenome || !email || !password || !tipoUtilizador) {
+    if (!Nome || !Sobrenome || !Email || !Password || !TipoUtilizador) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      alert('Por favor, insira um email válido.');
+    if (!emailRegex.test(Email)) {
+      alert('Por favor, insira um Email válido.');
       return;
     }
 
-    if (password.length < 6) {
+    if (Password.length < 6) {
       alert('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
 
-    if (tipoUtilizador !== "Freelancer" && tipoUtilizador !== "Cliente") {
+    if (TipoUtilizador !== "Freelancer" && TipoUtilizador !== "Cliente") {
       alert('Por favor, selecione um tipo de utilizador válido.');
       return;
     }
 
-    // Se for Freelancer, precisa preencher as informações adicionais
-    if (tipoUtilizador === "Freelancer" && (!descricaoInfo || !servicos)) {
+    if (TipoUtilizador === "Freelancer" && (!Descricao_info || !Servicos)) {
       alert('Por favor, preencha todos os campos adicionais para Freelancer.');
       return;
     }
 
     setIsLoading(true);
 
-    // Criação do objeto FormData para enviar os dados
     const formData = new FormData();
-    formData.append('nome', nome);
-    formData.append('sobrenome', sobrenome);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('tipoUtilizador', tipoUtilizador);
+    formData.append('Nome', Nome);
+    formData.append('Sobrenome', Sobrenome);
+    formData.append('Email', Email);
+    formData.append('Password', Password);
+    formData.append('TipoUtilizador', TipoUtilizador);
 
-    // Se for Freelancer, adicionar os campos adicionais
-    if (tipoUtilizador === "Freelancer") {
-      formData.append('descricaoInfo', descricaoInfo);
-      formData.append('servicos', servicos);
-      if (imagemPerfil) {
-        formData.append('imagemPerfil', imagemPerfil);
+    // Só envia os campos adicionais se o tipo de utilizador for Freelancer
+    if (TipoUtilizador === "Freelancer") {
+      formData.append('Descricao_info', Descricao_info);
+      formData.append('Servicos', Servicos);
+      if (Imagem_perfil) {
+        formData.append('Imagem_perfil', Imagem_perfil);
       }
     }
 
     try {
-      const response = await fetch('http://localhost:5289/api/Utilizador/register', {
+      const response = await fetch('http://localhost:5289/api/utilizador/register', {
         method: 'POST',
-        body: formData, // Enviando FormData
+        body: formData,
       });
 
       const result = await response.json();
@@ -74,9 +72,9 @@ const Register = () => {
 
       if (response.ok) {
         alert('Conta criada com sucesso!');
-        window.location.href = '/'; // Redireciona para a página inicial após o sucesso
+        window.location.href = '/';
       } else {
-        alert(`Erro: ${result.message}`);
+        alert(`Erro: ${result.Message || 'Erro inesperado.'}`);
       }
     } catch (error) {
       setIsLoading(false);
@@ -91,35 +89,35 @@ const Register = () => {
         <label>Nome</label>
         <Input
           type="text"
-          placeholder="Digite seu nome"
-          value={nome}
+          placeholder="Digite seu Nome"
+          value={Nome}
           onChange={(e) => setNome(e.target.value)}
         />
         <label>Sobrenome</label>
         <Input
           type="text"
-          placeholder="Digite seu sobrenome"
-          value={sobrenome}
+          placeholder="Digite seu Sobrenome"
+          value={Sobrenome}
           onChange={(e) => setSobrenome(e.target.value)}
         />
         <label>Email</label>
         <Input
-          type="email"
-          placeholder="Digite seu email"
-          value={email}
+          type="Email"
+          placeholder="Digite seu Email"
+          value={Email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <label>Senha</label>
         <Input
-          type="password"
+          type="Password"
           placeholder="Digite sua senha"
-          value={password}
+          value={Password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        
+
         <label>Tipo de Utilizador</label>
         <select
-          value={tipoUtilizador}
+          value={TipoUtilizador}
           onChange={(e) => setTipoUtilizador(e.target.value)}
           required
         >
@@ -128,22 +126,21 @@ const Register = () => {
           <option value="Cliente">Cliente</option>
         </select>
 
-        {/* Se o tipo de usuário for Freelancer, exibe os campos adicionais */}
-        {tipoUtilizador === "Freelancer" && (
+        {TipoUtilizador === "Freelancer" && (
           <div className="freelancer-info">
             <h2>Informações adicionais do Freelancer</h2>
             <label>Descrição</label>
             <Input
               type="text"
               placeholder="Digite uma descrição"
-              value={descricaoInfo}
+              value={Descricao_info}
               onChange={(e) => setDescricaoInfo(e.target.value)}
             />
             <label>Serviços</label>
             <Input
               type="text"
               placeholder="Digite seus serviços"
-              value={servicos}
+              value={Servicos}
               onChange={(e) => setServicos(e.target.value)}
             />
             <label>Imagem de Perfil</label>

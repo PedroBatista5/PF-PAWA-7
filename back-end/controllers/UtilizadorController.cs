@@ -1,6 +1,8 @@
 using Backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -14,9 +16,9 @@ namespace Backend.Controllers
         {
             _utilizadorService = utilizadorService;
         }
-
-                [HttpPost("register")]
-        public async Task<IActionResult> Register([FromForm] Utilizador utilizador, IFormFile imagemPerfil)
+        
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] Utilizador utilizador, [FromForm] IFormFile? imagemPerfil)
         {
             if (utilizador == null)
             {
@@ -33,21 +35,39 @@ namespace Backend.Controllers
                 return BadRequest(new { Message = "Tipo de utilizador inválido. Deve ser 'Freelancer' ou 'Cliente'." });
             }
 
-            if (utilizador.TipoUtilizador == "Freelancer" && (string.IsNullOrEmpty(utilizador.Descricao_info) || string.IsNullOrEmpty(utilizador.Servicos)))
+            // Validações específicas para Freelancer
+            if (utilizador.TipoUtilizador == "Freelancer")
             {
-                return BadRequest(new { Message = "Campos adicionais de Freelancer são obrigatórios." });
-            }
+                if (string.IsNullOrEmpty(utilizador.Descricao_info) || string.IsNullOrEmpty(utilizador.Servicos))
+                {
+                    return BadRequest(new { Message = "Campos adicionais de Freelancer são obrigatórios." });
+                }
 
-            // Lógica para tratar a imagem
-            if (imagemPerfil != null)
-            {
-                // Processar a imagem
-                var imagePath = Path.Combine("C:\\path\\to\\save", imagemPerfil.FileName);
+                if (imagemPerfil == null)
+                {
+                    return BadRequest(new { Message = "A imagem de perfil é obrigatória para Freelancers." });
+                }
+
+                // Definir um diretório válido para salvar a imagem
+                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                // Criar o diretório caso não exista
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+
+                // Caminho completo para salvar a imagem
+                var imagePath = Path.Combine(uploadDirectory, imagemPerfil.FileName);
+
+                // Salvar a imagem no diretório
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     await imagemPerfil.CopyToAsync(stream);
                 }
-                utilizador.Imagem_perfil = imagePath;
+
+                // Definir o caminho da imagem no banco de dados
+                utilizador.Imagem_perfil = Path.Combine("uploads", imagemPerfil.FileName);  // Caminho relativo
             }
 
             var (success, message) = await _utilizadorService.RegistrarUtilizadorAsync(utilizador);
@@ -59,6 +79,7 @@ namespace Backend.Controllers
 
             return BadRequest(new { Message = message });
         }
+
 
 
         [HttpPost("login")]
