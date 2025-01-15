@@ -1,104 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Backend.Controllers
+using SeuProjeto.Services;
+namespace SeuProjeto.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjetosController : ControllerBase
+    public class ProjetoController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ProjetosService _projetosService;
 
-        public ProjetosController(AppDbContext context)
+        public ProjetoController(ProjetosService projetosService)
         {
-            _context = context;
+            _projetosService = projetosService;
         }
 
-        // GET: api/Projetos
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Projetos>>> GetProjetos()
+        // Criar um novo projeto
+        [HttpPost]
+        [Route("criar")]
+        public async Task<IActionResult> CriarProjeto([FromForm] Projetos projeto)
         {
-            // Remova a inclusão do InfoUsers
-            return await _context.Projetos.ToListAsync();
-        }
-
-        // GET: api/Projetos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Projetos>> GetProjetos(int id)
-        {
-            var projetos = await _context.Projetos
-                .FirstOrDefaultAsync(p => p.Id_projetos == id);  // Remover a inclusão do InfoUsers
-
-            if (projetos == null)
-            {
-                return NotFound();
-            }
-
-            return projetos;
-        }
-
-        // PUT: api/Projetos/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProjetos(int id, Projetos projetos)
-        {
-            if (id != projetos.Id_projetos)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(projetos).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var novoProjeto = await _projetosService.CriarProjeto(projeto);
+                return Ok(novoProjeto);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ProjetosExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest($"Erro ao criar projeto: {ex.Message}");
             }
-
-            return NoContent();
         }
 
-        // POST: api/Projetos
-        [HttpPost]
-        public async Task<ActionResult<Projetos>> PostProjetos(Projetos projetos)
+        // Obter todos os projetos
+        [HttpGet]
+        [Route("todos")]
+        public async Task<IActionResult> ObterProjetos()
         {
-            _context.Projetos.Add(projetos);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProjetos", new { id = projetos.Id_projetos }, projetos);
-        }
-
-        // DELETE: api/Projetos/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Projetos>> DeleteProjetos(int id)
-        {
-            var projetos = await _context.Projetos.FindAsync(id);
-            if (projetos == null)
+            try
             {
-                return NotFound();
+                var projetos = await _projetosService.ObterProjetos();
+                return Ok(projetos);
             }
-
-            _context.Projetos.Remove(projetos);
-            await _context.SaveChangesAsync();
-
-            return projetos;
-        }
-
-        private bool ProjetosExists(int id)
-        {
-            return _context.Projetos.Any(e => e.Id_projetos == id);
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao obter projetos: {ex.Message}");
+            }
         }
     }
 }

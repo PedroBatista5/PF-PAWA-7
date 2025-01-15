@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/ProfilePage.css";
-import Button from "../components/BtForms";
+import Button from "../components/BtForms"; // Supondo que você já tenha o componente Button
 
 const ProfilePage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -11,8 +11,14 @@ const ProfilePage = () => {
     servicos: "",
     nota: "",
   });
+  const [newProjectData, setNewProjectData] = useState({
+    titulo: "",
+    preco: "",
+    descricao: "",
+    imagem: null,
+  });
   const [isLoading, setIsLoading] = useState(false);
-
+  const [projects, setProjects] = useState([]);  
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -26,7 +32,7 @@ const ProfilePage = () => {
             servicos: formData.servicos,
           }),
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setFormData({
@@ -46,10 +52,10 @@ const ProfilePage = () => {
     };
 
     fetchProfileData();
-  }, []);
+  }, [formData.info, formData.servicos]);
 
   const handleButtonClick = () => {
-    setIsPopupOpen(true);
+    setIsPopupOpen(true); // Abre o formulário de editar informações
   };
 
   const handleClosePopup = () => {
@@ -90,6 +96,50 @@ const ProfilePage = () => {
     }
   };
 
+  // Novo formulário de projeto
+  const handleProjectChange = (e) => {
+    const { name, value } = e.target;
+    setNewProjectData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    setNewProjectData((prevData) => ({
+      ...prevData,
+      imagem: e.target.files[0],
+    }));
+  };
+
+  const handleSaveProject = async () => {
+    setIsLoading(true);
+    const formDataProject = new FormData();
+    formDataProject.append("titulo", newProjectData.titulo);
+    formDataProject.append("preco", newProjectData.preco);
+    formDataProject.append("descricao", newProjectData.descricao);
+    formDataProject.append("imagem", newProjectData.imagem);
+
+    try {
+      const response = await fetch("http://localhost:5289/api/projetos", {
+        method: "POST",
+        body: formDataProject,
+      });
+
+      if (response.ok) {
+        alert("Projeto criado com sucesso!");
+        setIsPopupOpen(false);  // Fecha o formulário de projeto
+      } else {
+        alert("Erro ao criar projeto.");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar projeto:", error);
+      alert("Erro de conexão com o servidor.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-header">
@@ -108,8 +158,10 @@ const ProfilePage = () => {
 
       <div className="projects-section">
         <h2>Projetos</h2>
+        <Button text="Adicionar Novo Projeto" onClick={() => setIsPopupOpen(true)} />
       </div>
 
+      {/* Se o pop-up de editar informações estiver aberto */}
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup">
@@ -136,6 +188,52 @@ const ProfilePage = () => {
               </button>
               <button onClick={handleSave} disabled={isLoading}>
                 {isLoading ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Se o pop-up para adicionar novo projeto estiver aberto */}
+      {isPopupOpen && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <h2>Criar Novo Projeto</h2>
+            <p>Título</p>
+            <input
+              type="text"
+              name="titulo"
+              placeholder="Título do Projeto"
+              value={newProjectData.titulo}
+              onChange={handleProjectChange}
+            />
+            <p>Preço</p>
+            <input
+              type="number"
+              name="preco"
+              placeholder="Preço"
+              value={newProjectData.preco}
+              onChange={handleProjectChange}
+            />
+            <p>Descrição</p>
+            <textarea
+              name="descricao"
+              placeholder="Descrição do Projeto"
+              value={newProjectData.descricao}
+              onChange={handleProjectChange}
+            />
+            <p>Imagem</p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            <div className="popup-buttons">
+              <button onClick={handleClosePopup} disabled={isLoading}>
+                Cancelar
+              </button>
+              <button onClick={handleSaveProject} disabled={isLoading}>
+                {isLoading ? "Salvando..." : "Salvar Projeto"}
               </button>
             </div>
           </div>

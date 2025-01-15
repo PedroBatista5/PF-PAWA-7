@@ -6,6 +6,6 @@ public class Utilizador
     public string Email { get; set; }
     public string Password { get; set; }
     public string TipoUtilizador { get; set; } 
-    public string? Descricao_info { get; set; }= "Descrição padrão para freelancer.";
+    public string? Descricao_info { get; set; }= "Sem descrição.";
     public string? Servicos { get; set; } = "Serviços não especificados.";
 }
