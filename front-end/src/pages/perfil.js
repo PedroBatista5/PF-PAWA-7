@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../styles/ProfilePage.css";
-import Button from "../components/BtForms"; // Supondo que você já tenha o componente Button
+import Button from "../components/BtForms";
 
 const ProfilePage = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [isNewProjectPopupOpen, setIsNewProjectPopupOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
     info: "",
@@ -17,13 +19,12 @@ const ProfilePage = () => {
     descricao: "",
     imagem: null,
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [projects, setProjects] = useState([]);  
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const response = await fetch("http://localhost:5289/api/utilizador/updateProfile", {
-          method: "POST", // Use POST method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -52,14 +53,22 @@ const ProfilePage = () => {
     };
 
     fetchProfileData();
-  }, [formData.info, formData.servicos]);
+  }, []);
 
-  const handleButtonClick = () => {
-    setIsPopupOpen(true); // Abre o formulário de editar informações
+  const handleEditButtonClick = () => {
+    setIsEditPopupOpen(true);
   };
 
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
+  const handleNewProjectButtonClick = () => {
+    setIsNewProjectPopupOpen(true);
+  };
+
+  const handleCloseEditPopup = () => {
+    setIsEditPopupOpen(false);
+  };
+
+  const handleCloseNewProjectPopup = () => {
+    setIsNewProjectPopupOpen(false);
   };
 
   const handleChange = (e) => {
@@ -77,14 +86,12 @@ const ProfilePage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         alert("Dados salvos com sucesso!");
-        setIsPopupOpen(false); 
+        setIsEditPopupOpen(false);
       } else {
         alert("Erro ao salvar os dados.");
       }
@@ -92,11 +99,10 @@ const ProfilePage = () => {
       console.error("Erro ao salvar os dados:", error);
       alert("Erro de conexão com o servidor.");
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
-  // Novo formulário de projeto
   const handleProjectChange = (e) => {
     const { name, value } = e.target;
     setNewProjectData((prevData) => ({
@@ -115,20 +121,20 @@ const ProfilePage = () => {
   const handleSaveProject = async () => {
     setIsLoading(true);
     const formDataProject = new FormData();
-    formDataProject.append("titulo", newProjectData.titulo);
-    formDataProject.append("preco", newProjectData.preco);
-    formDataProject.append("descricao", newProjectData.descricao);
-    formDataProject.append("imagem", newProjectData.imagem);
+    formDataProject.append("Titulo_projetos", newProjectData.titulo);
+    formDataProject.append("Preco", newProjectData.preco);
+    formDataProject.append("Descricao_projeto", newProjectData.descricao);
+
 
     try {
-      const response = await fetch("http://localhost:5289/api/projetos", {
+      const response = await fetch("http://localhost:5289/api/projeto/criar", {
         method: "POST",
         body: formDataProject,
       });
 
       if (response.ok) {
         alert("Projeto criado com sucesso!");
-        setIsPopupOpen(false);  // Fecha o formulário de projeto
+        setIsNewProjectPopupOpen(false);
       } else {
         alert("Erro ao criar projeto.");
       }
@@ -146,23 +152,21 @@ const ProfilePage = () => {
         <div className="profile-image-container">
           <p className="profile-name">{formData.nome || "NOME"}</p>
         </div>
-
         <div className="profile-menu">
           <p>INFO</p>
           <p>PREÇOS</p>
           <p>SERVIÇOS</p>
           <p>NOTA</p>
-          <Button text="Editar Informações" onClick={handleButtonClick} />
+          <Button text="Editar Informações" onClick={handleEditButtonClick} />
         </div>
       </div>
 
       <div className="projects-section">
         <h2>Projetos</h2>
-        <Button text="Adicionar Novo Projeto" onClick={() => setIsPopupOpen(true)} />
+        <Button text="Adicionar Novo Projeto" onClick={handleNewProjectButtonClick} />
       </div>
 
-      {/* Se o pop-up de editar informações estiver aberto */}
-      {isPopupOpen && (
+      {isEditPopupOpen && (
         <div className="popup-overlay">
           <div className="popup">
             <h2>Editar Informações</h2>
@@ -183,7 +187,7 @@ const ProfilePage = () => {
               onChange={handleChange}
             />
             <div className="popup-buttons">
-              <button onClick={handleClosePopup} disabled={isLoading}>
+              <button onClick={handleCloseEditPopup} disabled={isLoading}>
                 Cancelar
               </button>
               <button onClick={handleSave} disabled={isLoading}>
@@ -194,8 +198,7 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {/* Se o pop-up para adicionar novo projeto estiver aberto */}
-      {isPopupOpen && (
+      {isNewProjectPopupOpen && (
         <div className="popup-overlay">
           <div className="popup">
             <h2>Criar Novo Projeto</h2>
@@ -222,14 +225,8 @@ const ProfilePage = () => {
               value={newProjectData.descricao}
               onChange={handleProjectChange}
             />
-            <p>Imagem</p>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
             <div className="popup-buttons">
-              <button onClick={handleClosePopup} disabled={isLoading}>
+              <button onClick={handleCloseNewProjectPopup} disabled={isLoading}>
                 Cancelar
               </button>
               <button onClick={handleSaveProject} disabled={isLoading}>

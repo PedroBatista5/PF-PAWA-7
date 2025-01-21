@@ -29,7 +29,6 @@ namespace SeuProjeto.Controllers
             }
         }
 
-        // Obter todos os projetos
         [HttpGet]
         [Route("todos")]
         public async Task<IActionResult> ObterProjetos()
@@ -44,5 +43,7 @@ namespace SeuProjeto.Controllers
                 return BadRequest($"Erro ao obter projetos: {ex.Message}");
             }
         }
+
+
     }
 }
