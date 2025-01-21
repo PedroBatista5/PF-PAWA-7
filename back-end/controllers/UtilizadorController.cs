@@ -72,6 +72,7 @@ namespace Backend.Controllers
             return Unauthorized(new { Message = message });
         }
 
+
         [HttpPost("updateProfile")]
         public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateModel model)
         {
@@ -84,6 +85,8 @@ namespace Backend.Controllers
 
             user.Descricao_info = model.Info;
             user.Servicos = model.Servicos;
+            user.Nome = model.Nome;
+            user.Sobrenome = model.Sobrenome;
 
             var (success, message) = await _utilizadorService.AtualizarUsuarioAsync(user);
 
@@ -96,6 +99,7 @@ namespace Backend.Controllers
         }
 
 
+
     }
 
     public class LoginModel
@@ -106,6 +110,8 @@ namespace Backend.Controllers
 
     public class ProfileUpdateModel
     {
+        public string Nome { get; set; }
+        public string Sobrenome { get; set; }
         public string Info { get; set; }
         public string Servicos { get; set; }
     }

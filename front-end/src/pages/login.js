@@ -22,12 +22,15 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
+  
+        localStorage.setItem("authToken", data.token); 
+  
         login(); 
-        navigate('/');
+        navigate('/home');
       } else {
         setErrorMessage(data.Message || 'Erro ao realizar login');
       }
@@ -35,6 +38,7 @@ const Login = () => {
       setErrorMessage('Erro de conexão ou outra falha.');
     }
   };
+  
 
   return (
     <div className="login-container">
