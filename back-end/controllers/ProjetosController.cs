@@ -13,10 +13,9 @@ namespace SeuProjeto.Controllers
             _projetosService = projetosService;
         }
 
-        // Criar um novo projeto
         [HttpPost]
         [Route("criar")]
-        public async Task<IActionResult> CriarProjeto([FromForm] Projetos projeto)
+        public async Task<IActionResult> CriarProjeto([FromBody] Projetos projeto)
         {
             try
             {

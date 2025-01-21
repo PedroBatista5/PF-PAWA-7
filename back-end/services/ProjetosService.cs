@@ -23,10 +23,21 @@ namespace SeuProjeto.Services
                     throw new ArgumentNullException(nameof(projeto), "O projeto não pode ser nulo.");
                 }
 
+                // Verifique se os campos obrigatórios estão presentes
+                if (string.IsNullOrWhiteSpace(projeto.Titulo_projetos) || string.IsNullOrWhiteSpace(projeto.Descricao_projeto))
+                {
+                    throw new ArgumentException("O título e a descrição do projeto são obrigatórios.");
+                }
+
+                if (projeto.Preco <= 0)
+                {
+                    throw new ArgumentException("O preço do projeto deve ser maior que zero.");
+                }
+
                 _context.Projetos.Add(projeto);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Projeto criado com sucesso: {@Projeto}", projeto);
+                _logger.LogInformation("Projeto criado com sucesso");
                 return projeto;
             }
             catch (Exception ex)
@@ -35,6 +46,7 @@ namespace SeuProjeto.Services
                 throw new Exception("Erro ao salvar o projeto: " + ex.Message);
             }
         }
+
 
         public async Task<List<Projetos>> ObterProjetos()
         {
