@@ -1,0 +1,73 @@
+/* Estilização geral da homepage */
+.homepage {
+    display: flex;
+    flex-direction: column; /* Mantém os elementos em uma coluna */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: 
+      linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+      url('../images/homepage.jpg') center/cover no-repeat fixed;
+    color: #fff;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+  }
+  
+  /* Centraliza e organiza o conteúdo */
+  .container {
+    display: flex;
+    flex-direction: column; /* Garante que os itens fiquem empilhados */
+    align-items: center;
+    max-width: 600px;
+    padding: 20px;
+    margin: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    gap: 20px; /* Espaçamento vertical entre os elementos */
+  }
+  
+  /* Título */
+  .container h1 {
+    font-size: 2.5rem;
+    margin: 0;
+  }
+  
+  /* Parágrafo */
+  .container p {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  
+  /* Estilização do link como botão */
+  .btn-link {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #000000;
+    background-color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.2s, background-color 0.3s, color 0.3s;
+    margin-top: 20px; /* Espaçamento superior opcional */
+  }
+  
+  .btn-link:hover {
+    background-color: #000000;
+    color: #fff;
+    transform: scale(1.05);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .container h1 {
+      font-size: 2rem;
+    }
+  
+    .container p {
+      font-size: 1rem;
+    }
+  }
+  
