@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react'; 
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';  
-import '../styles/layout.css';
-import '../styles/buttoninput.css';
-import Input from '../components/input';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext"; 
+import "../styles/layout.css";
+import "../styles/buttoninput.css";
+import Input from "../components/input";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -26,11 +26,9 @@ const Login = () => {
       const data = await response.json();
   
       if (response.ok) {
-  
-        localStorage.setItem("authToken", data.token); 
-  
-        login(); 
-        navigate('/home');
+        const user = { token: data.token, email }; 
+        login(user); // Passa as informações para o contexto
+        navigate('/home'); // Redireciona para a página inicial
       } else {
         setErrorMessage(data.Message || 'Erro ao realizar login');
       }
@@ -38,7 +36,6 @@ const Login = () => {
       setErrorMessage('Erro de conexão ou outra falha.');
     }
   };
-  
 
   return (
     <div className="login-container">

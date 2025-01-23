@@ -19,3 +19,21 @@ body {
     transform: rotate(360deg);
   }
 }
+
+main {
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}

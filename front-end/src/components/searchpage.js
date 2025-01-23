@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";  // Certifique-se de importar o contexto
-import Dropdown from "../components/dropdown.js";
-import Input from "./input.js";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/searchpage.css";
 
 const Searchpage = () => {
-  const [search, setSearch] = useState("");
   const [projects, setProjects] = useState([]);
-
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -25,32 +21,25 @@ const Searchpage = () => {
   }, []);
 
   return (
-  /* <div className="search-container">
-      <Dropdown options={["Filtros", "Opção 1", "Opção 2", "Opção 3"]} />
-      <Input
-        type="text"
-        placeholder="Pesquisa"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      /> */
-
-      <div className="projects-list">
-        {projects.length > 0 ? (
-          projects.map((project) => (
-            <div key={project.id_projetos} className="project-card">
-              <h3>{project.titulo_projetos}</h3>
-              <p>{project.descricao_projeto}</p>
-              <p>
-                <strong>Preço:</strong> {project.preco.toFixed(2)} €
-              </p>
-            </div>
-          ))
-        ) : (
-          <p>Nenhum projeto encontrado.</p>
-        )}
-      </div>
-
-    //</div>
+    <div className="projects-list">
+      {projects.length > 0 ? (
+        projects.map((project) => (
+          <Link 
+            to={`/projeto/${project.id_projetos}`} 
+            key={project.id_projetos} 
+            className="project-card"
+          >
+            <h3>{project.titulo_projetos}</h3>
+            <p>{project.descricao_projeto}</p>
+            <p>
+              <strong>Preço:</strong> {project.preco.toFixed(2)} €
+            </p>
+          </Link>
+        ))
+      ) : (
+        <p>Nenhum projeto encontrado.</p>
+      )}
+    </div>
   );
 };
 
