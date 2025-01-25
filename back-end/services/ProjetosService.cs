@@ -7,12 +7,15 @@ namespace SeuProjeto.Services
     {
         private readonly AppDbContext _context;
         private readonly ILogger<ProjetosService> _logger;
+        
 
         public ProjetosService(AppDbContext context, ILogger<ProjetosService> logger)
         {
             _context = context;
             _logger = logger;
         }
+
+        public List<Projetos> Projetos { get; set; } // Deve existir esta propriedade
 
         public async Task<Projetos> CriarProjeto(Projetos projeto)
         {
@@ -62,5 +65,20 @@ namespace SeuProjeto.Services
                 throw new Exception("Erro ao obter projetos: " + ex.Message);
             }
         }
+
+        public async Task<Projetos> ObterProjetoPorId(int id)
+        {
+            try
+            {
+                var projeto = await _context.Projetos.FirstOrDefaultAsync(p => p.Id_projetos == id);
+                return projeto;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar o projeto com ID {Id}", id);
+                throw new Exception("Erro ao buscar projeto: " + ex.Message);
+            }
+        }
+
     }
 }

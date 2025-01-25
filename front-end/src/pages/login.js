@@ -46,6 +46,7 @@ const Login = () => {
           type="email"
           placeholder="Digite seu email"
           value={email}
+           
           onChange={(e) => setEmail(e.target.value)}
         />
         <label>Senha</label>

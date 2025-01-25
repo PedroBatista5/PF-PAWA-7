@@ -73,31 +73,31 @@ namespace Backend.Controllers
         }
 
 
-        [HttpPost("updateProfile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateModel model)
+        [HttpGet("getProfile")]
+        public async Task<IActionResult> GetProfile()
         {
-            var user = await _utilizadorService.ObterUsuarioPorNomeAsync(User.Identity.Name);
+            var userName = User.Identity.Name;
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Nome de usuário não encontrado no token.");
+            }
+
+            var user = await _utilizadorService.ObterUsuarioPorNomeAsync(userName);
 
             if (user == null)
             {
                 return BadRequest("Usuário não encontrado.");
             }
 
-            user.Descricao_info = model.Info;
-            user.Servicos = model.Servicos;
-            user.Nome = model.Nome;
-            user.Sobrenome = model.Sobrenome;
-
-            var (success, message) = await _utilizadorService.AtualizarUsuarioAsync(user);
-
-            if (success)
+            return Ok(new
             {
-                return Ok("Perfil atualizado com sucesso.");
-            }
-
-            return BadRequest("Erro ao atualizar o perfil.");
+                Nome = user.Nome,
+                Sobrenome = user.Sobrenome,
+                TipoUtilizador = user.TipoUtilizador,
+                Descricao_info = user.Descricao_info,
+                Servicos = user.Servicos
+            });
         }
-
 
 
     }
@@ -112,7 +112,7 @@ namespace Backend.Controllers
     {
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
-        public string Info { get; set; }
+        public string Descricao_Info { get; set; }
         public string Servicos { get; set; }
     }
 

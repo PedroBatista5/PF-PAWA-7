@@ -76,7 +76,6 @@ namespace Backend.Services
     {
         return (await _context.Utilizadores
             .FirstOrDefaultAsync(u => u.Nome == nome))!;
-
     }
 
     public async Task<(bool success, string message)> AtualizarUsuarioAsync(Utilizador utilizador)
@@ -86,6 +85,7 @@ namespace Backend.Services
 
         return (true, "Usuário atualizado com sucesso.");
     }
+
 
  }
 

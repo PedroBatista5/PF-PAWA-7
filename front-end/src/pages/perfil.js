@@ -19,18 +19,22 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      const token = localStorage.getItem("authToken");
+  
+      if (!token) {
+        alert("Usuário não autenticado!");
+        return;
+      }
+  
       try {
-        const response = await fetch("http://localhost:5289/api/utilizador/updateProfile", {
-          method: "POST",
+        const response = await fetch("http://localhost:5289/api/utilizador/getProfile", {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, 
           },
-          body: JSON.stringify({
-            descricao_info: formData.descricao_info,
-            servicos: formData.servicos,
-          }),
         });
-
+  
         if (response.ok) {
           const data = await response.json();
           setFormData({
@@ -48,10 +52,10 @@ const ProfilePage = () => {
         alert("Erro de conexão com o servidor.");
       }
     };
-
+  
     fetchProfileData();
   }, []);
-
+  
   const handleEditButtonClick = () => {
     setIsEditPopupOpen(true);
   };
@@ -147,9 +151,10 @@ const ProfilePage = () => {
           <p className="profile-name">{formData.nome || "NOME"} {formData.sobrenome || "SOBRENOME"}</p>
         </div>
         <div className="profile-menu">
-          <p>INFO</p>
-          <p>TIPO</p>
-          <p>SERVIÇOS</p>
+          <p>Nome: {formData.nome || "NOME"}</p>
+          <p>Sobrenome: {formData.sobrenome || "SOBRENOME"}</p>
+          <p>Tipo: {formData.tipoUtilizador || "TIPO"}</p>
+          <p>Serviços: {formData.servicos || "SERVIÇOS"}</p>
           <Button text="Editar Informações" onClick={handleEditButtonClick} />
           <Button text="Criar Projeto" onClick={handleCreateProjectButtonClick} />
         </div>

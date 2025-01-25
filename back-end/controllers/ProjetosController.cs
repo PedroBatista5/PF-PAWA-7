@@ -43,6 +43,25 @@ namespace SeuProjeto.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProjetoById(int id)
+        {
+            try
+            {
+                var projeto = await _projetosService.ObterProjetoPorId(id);
+                if (projeto == null)
+                {
+                    return NotFound(new { mensagem = "Projeto não encontrado" }); // Mensagem customizada
+                }
+                return Ok(projeto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao buscar o projeto: {ex.Message}");
+            }
+        }
+
+
 
     }
 }

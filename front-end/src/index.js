@@ -8,6 +8,7 @@ import Registro from "./pages/register";
 import Perfil from "./pages/perfil";
 import Procurar from "./pages/procurar";
 import PrivateRoute from "./components/PrivateRoute";
+import ProjectPage from "./pages/ProjectPage";
 
 import "./App.css";
 
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="home" element={<Home />} />
             <Route path="register" element={<Registro />} />
             <Route path="procurar" element={<Procurar />} />
+            <Route path="/projeto/:id" element={<ProjectPage />} />
             <Route
               path="perfil"
               element={

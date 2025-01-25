@@ -24,11 +24,7 @@ const Searchpage = () => {
     <div className="projects-list">
       {projects.length > 0 ? (
         projects.map((project) => (
-          <Link 
-            to={`/projeto/${project.id_projetos}`} 
-            key={project.id_projetos} 
-            className="project-card"
-          >
+          <Link to={`/projeto/${project.id_projetos}`} key={project.id_projetos} className="project-card">
             <h3>{project.titulo_projetos}</h3>
             <p>{project.descricao_projeto}</p>
             <p>
