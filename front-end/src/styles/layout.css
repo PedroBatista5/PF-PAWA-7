@@ -189,3 +189,74 @@ select {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+/* Estilo geral para a navbar */
+nav {
+  background-color: #333; /* Fundo escuro */
+  color: white; /* Cor do texto */
+  padding: 0.5rem 1rem; /* Espaçamento interno */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  position: sticky; /* Fixa a navbar no topo ao rolar */
+  top: 0;
+  z-index: 1000;
+}
+
+/* Alinha a navbar horizontalmente */
+.nav-list {
+  display: flex;
+  justify-content: space-between; /* Espaçamento entre esquerda e direita */
+  align-items: center; /* Centraliza verticalmente */
+  list-style: none; /* Remove marcadores */
+  margin: 0;
+  padding: 0;
+}
+
+/* Grupos de links (esquerda e direita) */
+.left-nav,
+.right-nav {
+  display: flex;
+  gap: 1rem; /* Espaço entre os itens */
+}
+
+/* Links */
+.nav-list a {
+  text-decoration: none; /* Remove sublinhado */
+  color: white; /* Cor do texto */
+  font-weight: bold; /* Deixa o texto mais visível */
+  padding: 0.5rem 1rem; /* Adiciona espaçamento interno */
+  border-radius: 4px; /* Cantos arredondados */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Animação suave */
+}
+
+/* Efeito ao passar o mouse */
+.nav-list a:hover {
+  background-color: #575757; /* Fundo mais claro */
+  color: #e2e2e2; /* Texto mais claro */
+}
+
+/* Links ativos */
+.nav-list a.active {
+  background-color: #007bff; /* Destaque azul */
+  color: white; /* Texto branco */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+  }
+
+  .nav-list {
+    flex-direction: column; /* Links em uma coluna */
+  }
+
+  .left-nav,
+  .right-nav {
+    flex-direction: column; /* Links empilhados */
+    gap: 0.5rem;
+  }
+
+  .nav-list a {
+    text-align: center;
+  }
+}

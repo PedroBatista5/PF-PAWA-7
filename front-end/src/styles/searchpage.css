@@ -29,33 +29,74 @@
 .projects-list {
   margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cards mais largos */
+  gap: 24px; /* Maior espaçamento entre os cards */
+  padding: 20px; /* Espaço nas laterais */
 }
 
 .project-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  background: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 16px; /* Cantos arredondados */
+  padding: 20px;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Gradiente suave */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
   text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s, box-shadow 0.2s;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column; /* Conteúdo empilhado */
+  justify-content: space-between;
 }
 
 .project-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px); /* Elevação ao passar o mouse */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Sombra mais forte */
 }
 
-
 .project-card h3 {
-  margin: 0 0 10px;
-  font-size: 1.2rem;
+  margin: 0 0 12px;
+  font-size: 1.5rem; /* Título maior */
+  color: #052950; /* Azul destaque */
 }
 
 .project-card p {
-  margin: 4px 0;
+  margin: 8px 0;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
+.project-card p strong {
+  color: #333; /* Destaque para texto em negrito */
+}
+
+/* Seção do rodapé do card */
+.project-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-footer button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #052950; /* Botão azul */
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.project-footer button:hover {
+  background: #08396e; /* Azul mais escuro ao passar o mouse */
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+  .projects-list {
+    grid-template-columns: 1fr; /* Um card por linha */
+  }
+}

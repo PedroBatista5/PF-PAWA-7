@@ -13,7 +13,11 @@ const ProjectPage = () => {
         console.log(`Buscando projeto com ID: ${id}`);
         const response = await fetch(`http://localhost:5289/api/Projeto/${id}`);
         if (!response.ok) {
-          console.error("Erro ao buscar o projeto:", response.status, response.statusText);
+          console.error(
+            "Erro ao buscar o projeto:",
+            response.status,
+            response.statusText
+          );
           setProject(null);
           return;
         }
@@ -26,10 +30,10 @@ const ProjectPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchProject();
   }, [id]);
-  
+
   if (loading) {
     return <p>Carregando...</p>;
   }
@@ -41,12 +45,22 @@ const ProjectPage = () => {
   return (
     <div className="project-details">
       <h1>{project.titulo_projetos}</h1>
-      <p><strong>Descrição:</strong> {project.descricao_projeto}</p>
-      <p><strong>Preço:</strong> {project.preco.toFixed(2)} €</p>
-      <p><strong>Criador:</strong> {project.nome_utilizador}</p>
+      <p>
+        <strong>Descrição:</strong> {project.descricao_projeto}
+      </p>
+      <p>
+        <strong>Preço:</strong> {project.preco.toFixed(2)} €
+      </p>
+      <p>
+        <strong>Criador:</strong> {project.nome_utilizador}
+      </p>
       <div className="containerbt">
-        <Link to="/procurar" className="back-link">Voltar à lista de projetos</Link>
-        <Link to="/home" className="back-link">Contratar</Link>
+        <Link to="/procurar" className="back-link">
+          Voltar à lista de projetos
+        </Link>
+        <Link to="/home" className="back-link">
+          Contratar
+        </Link>
       </div>
     </div>
   );

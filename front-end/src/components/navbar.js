@@ -1,21 +1,22 @@
-import { Link, useNavigate, Outlet } from 'react-router-dom'; 
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from "../contexts/AuthContext"; 
+import '../styles/layout.css';
 
 const Layout = () => {
-  const { currentUser, logout } = useContext(AuthContext); 
-  const navigate = useNavigate(); // Hook para navegação
+  const { currentUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // Chama a função de logout
-    navigate('/login'); // Redireciona para a página de login
+    logout();
+    navigate('/login');
   };
 
   return (
     <>
       <nav>
         <ul className="nav-list">
-          {!currentUser && ( 
+          {!currentUser && (
             <div className="left-nav">
               <li>
                 <Link to="/login">Login</Link>
@@ -25,10 +26,10 @@ const Layout = () => {
               </li>
             </div>
           )}
-          {currentUser && ( 
+          {currentUser && (
             <div className="left-nav">
               <li>
-                <Link to="/login" onClick={handleLogout}>Logout</Link> 
+                <Link to="/login" onClick={handleLogout}>Logout</Link>
               </li>
             </div>
           )}
