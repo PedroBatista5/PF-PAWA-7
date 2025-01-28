@@ -53,7 +53,6 @@ namespace Backend.Controllers
         }
 
 
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
@@ -62,33 +61,39 @@ namespace Backend.Controllers
                 return BadRequest(new { Message = "Dados inválidos." });
             }
 
-            var (success, message) = await _utilizadorService.LoginAsync(loginModel.Email, loginModel.Password);
+            var (success, message, token, id_utilizador) = await _utilizadorService.LoginAsync(loginModel.Email, loginModel.Password);
 
             if (success)
             {
-                return Ok(new { Message = message });
+                // Retorna o token e o id_utilizador
+                return Ok(new { token, id_utilizador });
             }
 
             return Unauthorized(new { Message = message });
         }
 
 
+
         [HttpGet("getProfile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userName = User.Identity.Name;
-            if (string.IsNullOrEmpty(userName))
+            // Obtém o email do token
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
             {
-                return BadRequest("Nome de usuário não encontrado no token.");
+                return BadRequest("Email não encontrado no token.");
             }
 
-            var user = await _utilizadorService.ObterUsuarioPorNomeAsync(userName);
+            // Busca o usuário pelo email
+            var user = await _utilizadorService.ObterUsuarioPorEmailAsync(userEmail);
 
             if (user == null)
             {
-                return BadRequest("Usuário não encontrado.");
+                return NotFound("Usuário não encontrado.");
             }
 
+            // Retorna os dados do perfil
             return Ok(new
             {
                 Nome = user.Nome,
@@ -98,7 +103,6 @@ namespace Backend.Controllers
                 Servicos = user.Servicos
             });
         }
-
 
     }
 
@@ -116,5 +120,6 @@ namespace Backend.Controllers
         public string Servicos { get; set; }
     }
 
+    
 
 }

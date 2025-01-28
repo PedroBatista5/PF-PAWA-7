@@ -1,6 +1,6 @@
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
-using SeuProjeto.Services;
+using SeuProjeto.Services; // Se estiver no namespace correto
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +10,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<UtilizadorService>();
 builder.Services.AddScoped<ProjetosService>();
+builder.Services.AddScoped<IContratacaoService, ContratacaoService>();
 
 builder.Services.AddControllers();
-
 
 builder.Services.AddCors(options =>
 {
@@ -26,19 +26,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-
 app.UseCors("AllowAll");
-
 
 app.UseRouting();
 app.MapControllers(); 
 
 app.Run();
-
-

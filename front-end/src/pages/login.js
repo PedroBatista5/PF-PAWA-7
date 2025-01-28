@@ -22,11 +22,21 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        const user = { token: data.token, email }; 
+        // Supondo que o backend retorne o id_utilizador junto com o token
+        const user = { 
+          token: data.token, 
+          email, 
+          id_utilizador: data.id_utilizador, // Aqui, você adiciona o id_utilizador
+        };
+
+        // Salvar os dados no localStorage
+        localStorage.setItem("authToken", data.token); // Armazenando o token
+        localStorage.setItem("userData", JSON.stringify(user)); // Armazenando todos os dados do usuário
+        
         login(user); // Passa as informações para o contexto
         navigate('/home'); // Redireciona para a página inicial
       } else {
@@ -46,7 +56,6 @@ const Login = () => {
           type="email"
           placeholder="Digite seu email"
           value={email}
-           
           onChange={(e) => setEmail(e.target.value)}
         />
         <label>Senha</label>

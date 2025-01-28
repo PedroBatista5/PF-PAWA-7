@@ -7,22 +7,25 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Ao iniciar, verifica se há um token no localStorage e restaura o usuário
+  // Ao iniciar, verifica se há um token e dados do usuário no localStorage
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setCurrentUser({ token }); // Ajuste se precisar restaurar mais dados do usuário
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      setCurrentUser(JSON.parse(userData)); // Restaura o usuário completo
     }
   }, []);
 
   const login = (user) => {
-    localStorage.setItem("authToken", user.token); // Armazena o token no localStorage
-    setCurrentUser(user); // Atualiza o estado de currentUser
+    // Armazena tanto o token quanto os dados do usuário
+    localStorage.setItem("authToken", user.token);
+    localStorage.setItem("userData", JSON.stringify(user)); // Armazena o usuário completo
+    setCurrentUser(user); // Atualiza o estado com os dados completos do usuário
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken"); // Remove o token do localStorage
-    setCurrentUser(null); // Atualiza o estado de currentUser
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
+    setCurrentUser(null);
   };
 
   return (

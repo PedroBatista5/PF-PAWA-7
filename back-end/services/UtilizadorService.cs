@@ -1,5 +1,9 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
+using System.Text;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services
 {
@@ -50,7 +54,7 @@ namespace Backend.Services
     }
 
 
-    public async Task<(bool success, string message)> LoginAsync(string email, string password)
+    public async Task<(bool success, string message, string token, int id_utilizador)> LoginAsync(string email, string password)
     {
         // Procurar o utilizador pelo email
         var utilizador = await _context.Utilizadores
@@ -59,23 +63,52 @@ namespace Backend.Services
         // Verificar se o utilizador existe
         if (utilizador == null)
         {
-            return (false, "Usuário não encontrado.");
+            return (false, "Usuário não encontrado.", null, 0);
         }
 
         // Verificar a senha
         bool passwordMatches = BCrypt.Net.BCrypt.Verify(password, utilizador.Password);
         if (!passwordMatches)
         {
-            return (false, "Senha incorreta.");
+            return (false, "Senha incorreta.", null, 0);
         }
 
-        return (true, "Login bem-sucedido.");
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var randomKey = new byte[32]; // 256 bits = 32 bytes
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomKey);  // Preenche a chave com valores aleatórios
+        }
+        var base64Key = Convert.ToBase64String(randomKey);  // Converte para Base64
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new System.Security.Claims.ClaimsIdentity(new[]
+            {
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, utilizador.Id_utilizador.ToString()),
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, utilizador.Email)
+            }),
+            Expires = DateTime.UtcNow.AddHours(1), // Tempo de expiração do token
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(randomKey), SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
+
+
+        // Retornar sucesso, mensagem, token e id do utilizador
+        return (true, "Login bem-sucedido.", tokenString, utilizador.Id_utilizador);
     }
 
     public async Task<Utilizador> ObterUsuarioPorNomeAsync(string nome)
     {
         return (await _context.Utilizadores
             .FirstOrDefaultAsync(u => u.Nome == nome))!;
+    }
+
+    public async Task<Utilizador> ObterUsuarioPorEmailAsync(string email)
+    {
+            // Busca o usuário no banco de dados pelo email
+            return await _context.Utilizadores.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public async Task<(bool success, string message)> AtualizarUsuarioAsync(Utilizador utilizador)

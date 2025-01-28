@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SeuProjeto.Services;
 
 namespace SeuProjeto.Services
 {
@@ -7,15 +8,12 @@ namespace SeuProjeto.Services
     {
         private readonly AppDbContext _context;
         private readonly ILogger<ProjetosService> _logger;
-        
 
         public ProjetosService(AppDbContext context, ILogger<ProjetosService> logger)
         {
             _context = context;
             _logger = logger;
         }
-
-        public List<Projetos> Projetos { get; set; } // Deve existir esta propriedade
 
         public async Task<Projetos> CriarProjeto(Projetos projeto)
         {
@@ -26,10 +24,11 @@ namespace SeuProjeto.Services
                     throw new ArgumentNullException(nameof(projeto), "O projeto não pode ser nulo.");
                 }
 
-                // Verifique se os campos obrigatórios estão presentes
-                if (string.IsNullOrWhiteSpace(projeto.Titulo_projetos) || string.IsNullOrWhiteSpace(projeto.Descricao_projeto))
+                if (string.IsNullOrWhiteSpace(projeto.Titulo_projetos) || 
+                    string.IsNullOrWhiteSpace(projeto.Descricao_projeto) || 
+                    projeto.Id_utilizador == 0)
                 {
-                    throw new ArgumentException("O título e a descrição do projeto são obrigatórios.");
+                    throw new ArgumentException("O título, descrição e ID do utilizador são obrigatórios.");
                 }
 
                 if (projeto.Preco <= 0)
@@ -38,18 +37,24 @@ namespace SeuProjeto.Services
                 }
 
                 _context.Projetos.Add(projeto);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // Salva as alterações no banco
 
                 _logger.LogInformation("Projeto criado com sucesso");
                 return projeto;
             }
+            catch (DbUpdateException dbEx)
+            {
+                // Captura e exibe a inner exception (se disponível)
+                var innerException = dbEx.InnerException != null ? dbEx.InnerException.Message : "Sem detalhes adicionais.";
+                _logger.LogError(dbEx, "Erro ao salvar o projeto no banco de dados. Inner Exception: {InnerException}", innerException);
+                throw new Exception($"Erro ao salvar o projeto: {innerException}");
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao criar o projeto.");
+                _logger.LogError(ex, "Erro geral ao criar o projeto.");
                 throw new Exception("Erro ao salvar o projeto: " + ex.Message);
             }
         }
-
 
         public async Task<List<Projetos>> ObterProjetos()
         {
@@ -79,6 +84,5 @@ namespace SeuProjeto.Services
                 throw new Exception("Erro ao buscar projeto: " + ex.Message);
             }
         }
-
     }
 }

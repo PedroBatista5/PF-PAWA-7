@@ -124,3 +124,9 @@ C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\obj\Debug\net8.0\back-end.pd
 C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\obj\Debug\net8.0\back-end.genruntimeconfig.cache
 C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\obj\Debug\net8.0\ref\back-end.dll
 C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Usuario\Desktop\pawa-pf\PF-PAWA-7\back-end\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

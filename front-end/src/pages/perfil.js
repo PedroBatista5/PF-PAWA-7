@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../styles/ProfilePage.css";
 import Button from "../components/BtForms";
+import { useAuth } from "../contexts/AuthContext";
 
 const ProfilePage = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isCreateProjectPopupOpen, setIsCreateProjectPopupOpen] = useState(false);
+  const { currentUser } = useAuth(); // Usa o hook para acessar o contexto de autenticação
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
@@ -14,7 +16,7 @@ const ProfilePage = () => {
     servicos: "",
     projectName: "",
     projectDescription: "",
-    projectPrice: "", // Preço do projeto
+    projectPrice: "", 
   });
 
   useEffect(() => {
@@ -104,45 +106,64 @@ const ProfilePage = () => {
     }
   };
 
-  const handleCreateProject = async () => {
-    const preco = parseFloat(formData.projectPrice);
+    const handleCreateProject = async () => {
+      const preco = parseFloat(formData.projectPrice);
+      
+      if (isNaN(preco) || preco <= 0) {
+        alert("Por favor, insira um valor válido para o preço.");
+        return;
+      }
     
-    // Verifica se o valor de 'Preco' é um número válido
-    if (isNaN(preco) || preco <= 0) {
-      alert("Por favor, insira um valor válido para o preço.");
-      return;
-    }
-  
-    const projetoData = {
-      Titulo_projetos: formData.projectName,
-      Preco: preco,  // Converte para número decimal
-      Descricao_projeto: formData.projectDescription,
+      // Verificar se os campos obrigatórios estão preenchidos
+      if (!formData.projectName || !formData.projectDescription || isNaN(preco)) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+      }
+    
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("Usuário não autenticado.");
+        return;
+      }
+    
+      const projetoData = {
+        Titulo_projetos: formData.projectName,
+        Preco: preco,
+        Descricao_projeto: formData.projectDescription,
+        Id_utilizador: currentUser?.id,  // Certifique-se de que está pegando o ID corretamente
+      };
+    
+      console.log('Projeto Data:', projetoData); // Verifique se os dados estão corretos
+    
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:5289/api/Projeto/criar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(projetoData),
+        });
+    
+        if (response.ok) {
+          alert(`Projeto criado com sucesso`);
+          setIsCreateProjectPopupOpen(false);
+        } else {
+          const errorData = await response.json();
+          console.error('Erro de API:', errorData);
+          const erroTituloProjeto = errorData.errors && errorData.errors.Titulo_projetos ? errorData.errors.Titulo_projetos[0] : 'Erro desconhecido';
+          alert(`Erro: ${erroTituloProjeto}`);
+        }
+      } catch (error) {
+        console.error("Erro ao criar projeto:", error);
+        alert("Erro de conexão com o servidor.");
+      } finally {
+        setIsLoading(false);
+      }
     };
   
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:5289/api/Projeto/criar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(projetoData),
-      });
   
-      if (response.ok) {
-        alert(`Projeto criado com sucesso`);
-        setIsCreateProjectPopupOpen(false);
-      } else {
-        const errorData = await response.json();
-        alert(`Erro: ${errorData.errors ? errorData.errors.Titulo_projetos[0] : "Erro ao criar o projeto"}`);
-      }
-    } catch (error) {
-      console.error("Erro ao criar projeto:", error);
-      alert("Erro de conexão com o servidor.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
   
   return (
     <div className="profile-page">
