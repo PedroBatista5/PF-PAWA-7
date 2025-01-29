@@ -33,9 +33,7 @@ const ProjectPage = () => {
     fetchProject();
   
     console.log("currentUser:", currentUser);  
-  
   }, [id, currentUser]);
-  
 
   const handleContratar = async () => {
     console.log("currentUser:", currentUser); // Verifique o conteúdo de currentUser
@@ -48,12 +46,13 @@ const ProjectPage = () => {
       alert("Projeto não encontrado.");
       return;
     }
-  
+    
     const requestBody = {
-      Cliente: currentUser.id_utilizador,  // Usando 'Cliente' ao invés de 'id_cliente'
-      Projeto: project.id_projetos,        // Usando 'Projeto' ao invés de 'id_projeto'
-      Status_contratacao: 'Pendente',
+      Id_utilizador: currentUser.id_utilizador, 
+      Id_projetos: project.id_projetos,
+      Status_contratacao: "Pendente",
     };
+    
     
     console.log("Enviando requisição com o seguinte corpo:", requestBody);
   
@@ -78,9 +77,7 @@ const ProjectPage = () => {
       alert("Erro de conexão com o servidor.");
     }
   };
-  
-  
-  
+
   if (loading) {
     return <p>Carregando...</p>;
   }
@@ -99,7 +96,7 @@ const ProjectPage = () => {
         <strong>Preço:</strong> {project.preco.toFixed(2)} €
       </p>
       <p>
-        <strong>Criador:</strong> {project.nome_utilizador}
+        <strong>Criador:</strong> {project.NomeCriador}
       </p>
       <div className="containerbt">
         <Link to="/procurar" className="back-link">

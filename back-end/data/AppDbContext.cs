@@ -6,13 +6,12 @@ public class AppDbContext : DbContext
 
     public DbSet<Utilizador> Utilizadores { get; set; }
     public DbSet<Projetos> Projetos { get; set; }
-    public DbSet<Contratacao> Contratacoes { get; set; } // Adicionado
+    public DbSet<Contratacao> Contratacoes { get; set; } 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configuração da entidade Utilizador
         modelBuilder.Entity<Utilizador>(entity =>
         {
             entity.HasKey(u => u.Id_utilizador);
@@ -29,34 +28,26 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Projetos>(entity =>
         {
-            entity.ToTable("projetos"); // Nome da tabela no banco
-
-            entity.HasKey(p => p.Id_projetos); // Chave primária
+            entity.HasKey(p => p.Id_projetos);
             entity.Property(p => p.Id_projetos)
-                .ValueGeneratedOnAdd(); // Auto incremento
-
+                .ValueGeneratedOnAdd(); 
             entity.Property(p => p.Titulo_projetos)
                 .IsRequired()
-                .HasMaxLength(100); // Restrição de tamanho como no banco
+                .HasMaxLength(100);
 
             entity.Property(p => p.Preco)
-                .IsRequired(); // Campo obrigatório
+                .IsRequired();
 
             entity.Property(p => p.Descricao_projeto)
                 .IsRequired()
-                .HasMaxLength(200); // Restrição de tamanho como no banco
+                .HasMaxLength(200);
 
-            entity.Property(p => p.Id_utilizador)
-                .IsRequired(); // Campo obrigatório
-
-            // Relacionamento com a tabela Utilizadores
-            entity.HasOne(p => p.Utilizador)
+            entity.HasOne(p => p.Utilizador) 
                 .WithMany()
                 .HasForeignKey(p => p.Id_utilizador)
-                .OnDelete(DeleteBehavior.Cascade); // Cascade delete para integridade referencial
+                .OnDelete(DeleteBehavior.Cascade); 
         });
 
-        // Configuração da entidade Contratacao
         modelBuilder.Entity<Contratacao>(entity =>
         {
             entity.HasKey(c => c.Id_contratacao);

@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 const ProfilePage = () => {
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isCreateProjectPopupOpen, setIsCreateProjectPopupOpen] = useState(false);
-  const { currentUser } = useAuth(); // Usa o hook para acessar o contexto de autenticação
+  const { currentUser } = useAuth(); 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
@@ -22,12 +22,12 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       const token = localStorage.getItem("authToken");
-  
+
       if (!token) {
         alert("Usuário não autenticado!");
         return;
       }
-  
+
       try {
         const response = await fetch("http://localhost:5289/api/utilizador/getProfile", {
           method: "GET",
@@ -36,7 +36,7 @@ const ProfilePage = () => {
             Authorization: `Bearer ${token}`, 
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           setFormData({
@@ -54,10 +54,10 @@ const ProfilePage = () => {
         alert("Erro de conexão com o servidor.");
       }
     };
-  
+
     fetchProfileData();
   }, []);
-  
+
   const handleEditButtonClick = () => {
     setIsEditPopupOpen(true);
   };
@@ -83,15 +83,23 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     setIsLoading(true);
+  
     try {
-      const response = await fetch("http://localhost:5289/api/updateProfile", {
-        method: "POST",
+      const token = localStorage.getItem("authToken");
+      const user = JSON.parse(localStorage.getItem("userData")); // Para obter a ID do usuário
+      const response = await fetch(`http://localhost:5289/api/utilizador/${user.id_utilizador}`, {
+        method: "PUT", // Usar PUT corretamente
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          descricao_info: formData.descricao_info,
+          servicos: formData.servicos,
+        }), 
       });
-
+      
+  
       if (response.ok) {
         alert("Dados salvos com sucesso!");
         setIsEditPopupOpen(false);
@@ -105,66 +113,62 @@ const ProfilePage = () => {
       setIsLoading(false);
     }
   };
+  
 
-    const handleCreateProject = async () => {
-      const preco = parseFloat(formData.projectPrice);
-      
-      if (isNaN(preco) || preco <= 0) {
-        alert("Por favor, insira um valor válido para o preço.");
-        return;
-      }
-    
-      // Verificar se os campos obrigatórios estão preenchidos
-      if (!formData.projectName || !formData.projectDescription || isNaN(preco)) {
-        alert("Por favor, preencha todos os campos obrigatórios.");
-        return;
-      }
-    
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        alert("Usuário não autenticado.");
-        return;
-      }
-    
-      const projetoData = {
-        Titulo_projetos: formData.projectName,
-        Preco: preco,
-        Descricao_projeto: formData.projectDescription,
-        Id_utilizador: currentUser?.id,  // Certifique-se de que está pegando o ID corretamente
-      };
-    
-      console.log('Projeto Data:', projetoData); // Verifique se os dados estão corretos
-    
-      setIsLoading(true);
-      try {
-        const response = await fetch("http://localhost:5289/api/Projeto/criar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(projetoData),
-        });
-    
-        if (response.ok) {
-          alert(`Projeto criado com sucesso`);
-          setIsCreateProjectPopupOpen(false);
-        } else {
-          const errorData = await response.json();
-          console.error('Erro de API:', errorData);
-          const erroTituloProjeto = errorData.errors && errorData.errors.Titulo_projetos ? errorData.errors.Titulo_projetos[0] : 'Erro desconhecido';
-          alert(`Erro: ${erroTituloProjeto}`);
-        }
-      } catch (error) {
-        console.error("Erro ao criar projeto:", error);
-        alert("Erro de conexão com o servidor.");
-      } finally {
-        setIsLoading(false);
-      }
+  const handleCreateProject = async () => {
+    const token = localStorage.getItem("authToken"); 
+    if (!token) {
+      console.error("Token não encontrado!");
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("userData")); 
+    if (!user || !user.id_utilizador) {
+      console.error("Usuário não encontrado no localStorage");
+      return;
+    }
+
+    const preco = parseFloat(formData.projectPrice);
+    if (isNaN(preco)) {
+      console.error("Preço inválido! Insira um número válido.");
+      alert("Preço inválido! Insira um número válido.");
+      return;
+    }
+
+    const projectData = {
+      titulo_projetos: formData.projectName,
+      preco: preco, 
+      descricao_projeto: formData.projectDescription,
+      id_utilizador: user.id_utilizador, 
     };
-  
-  
-  
+
+    try {
+      const response = await fetch("http://localhost:5289/api/projeto/criar", { 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(projectData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Erro ao criar projeto:", errorText);
+        alert("Erro ao criar o projeto: " + errorText);
+        return;
+      }
+
+      const data = await response.json().catch(() => null); // Evita erro de JSON vazio
+      console.log("Projeto criado com sucesso:", data);
+      alert("Projeto criado com sucesso!");
+      setIsCreateProjectPopupOpen(false);
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Erro de conexão com o servidor.");
+    }
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-header">
@@ -175,6 +179,7 @@ const ProfilePage = () => {
           <p>Nome: {formData.nome || "NOME"}</p>
           <p>Sobrenome: {formData.sobrenome || "SOBRENOME"}</p>
           <p>Tipo: {formData.tipoUtilizador || "TIPO"}</p>
+          <p>Descrição: {formData.descricao_info || "Sem descrição"}</p>
           <p>Serviços: {formData.servicos || "SERVIÇOS"}</p>
           <Button text="Editar Informações" onClick={handleEditButtonClick} />
           <Button text="Criar Projeto" onClick={handleCreateProjectButtonClick} />
@@ -190,9 +195,10 @@ const ProfilePage = () => {
               type="text"
               name="descricao_info"
               placeholder="Atualizar Descrição"
-              value={formData.descricao_info}
+              value={formData.descricao_info || ""}
               onChange={handleChange}
             />
+
             <p>Serviços</p>
             <input
               type="text"

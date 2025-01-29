@@ -12,9 +12,11 @@ namespace Backend.Controllers
     public class UtilizadorController : ControllerBase
     {
         private readonly UtilizadorService _utilizadorService;
-
-        public UtilizadorController(UtilizadorService utilizadorService)
+        private readonly AppDbContext _context;
+        public UtilizadorController(UtilizadorService utilizadorService, AppDbContext context)
         {
+            _utilizadorService = utilizadorService;
+            _context = context;
             _utilizadorService = utilizadorService;
         }
         
@@ -65,7 +67,6 @@ namespace Backend.Controllers
 
             if (success)
             {
-                // Retorna o token e o id_utilizador
                 return Ok(new { token, id_utilizador });
             }
 
@@ -77,47 +78,62 @@ namespace Backend.Controllers
         [HttpGet("getProfile")]
         public async Task<IActionResult> GetProfile()
         {
-            // Obtém o email do token
             var userEmail = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrEmpty(userEmail))
             {
-                return BadRequest("Email não encontrado no token.");
+                return BadRequest(new { Message = "Email não encontrado no token." });
             }
 
-            // Busca o usuário pelo email
             var user = await _utilizadorService.ObterUsuarioPorEmailAsync(userEmail);
 
             if (user == null)
             {
-                return NotFound("Usuário não encontrado.");
+                return NotFound(new { Message = "Utilizador não encontrado." });
             }
 
-            // Retorna os dados do perfil
             return Ok(new
             {
-                Nome = user.Nome,
-                Sobrenome = user.Sobrenome,
-                TipoUtilizador = user.TipoUtilizador,
-                Descricao_info = user.Descricao_info,
-                Servicos = user.Servicos
+                user.Nome,
+                user.Sobrenome,
+                user.TipoUtilizador,
+                user.Descricao_info,
+                user.Servicos
             });
         }
 
+       [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizarPerfil(int id, [FromBody] Utilizador utilizador)
+        {
+            // Verificar se o usuário existe
+            var usuarioExistente = await _context.Utilizadores.FindAsync(id);
+            if (usuarioExistente == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // Atualizar as informações do perfil
+            usuarioExistente.Descricao_info = utilizador.Descricao_info;
+            usuarioExistente.Servicos = utilizador.Servicos;
+
+            _context.Utilizadores.Update(usuarioExistente);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Perfil atualizado com sucesso!" });
+        }
+
+
+    public class UpdateProfileRequest
+    {
+        public string Descricao_info { get; set; }
+        public string Servicos { get; set; }
+    }
     }
 
     public class LoginModel
     {
         public string Email { get; set; }
         public string Password { get; set; }
-    }
-
-    public class ProfileUpdateModel
-    {
-        public string Nome { get; set; }
-        public string Sobrenome { get; set; }
-        public string Descricao_Info { get; set; }
-        public string Servicos { get; set; }
     }
 
     

@@ -6,52 +6,63 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
+  padding: 20px 0;
 }
 
 .profile-header {
   display: flex;
-  padding: 10px;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  background-color: rgb(218, 218, 218);  /* Card branco ao redor das informações */
+  border-radius: 8px;  /* Bordas mais suaves */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 600px; /* Altura fixa do card para dar a aparência quadrada */
 }
 
 .profile-image-container {
   text-align: center;
-}
-
-.profile-image {
-  width: 100px;
-  height: 100px;
-  padding: 35px;
-  border-radius: 50%;
+  margin-bottom: 20px;
 }
 
 .profile-name {
   margin-top: 10px;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: black;  /* Cor preta para o nome, para melhor contraste */
 }
 
 .profile-menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .profile-menu p {
-  margin: 10px 0;
+  margin: 5px 0;
   font-size: 1rem;
-  cursor: pointer;
+  color: black;  /* Texto em preto para maior legibilidade */
 }
 
-/* Estilo da seção de projetos */
-.projects-section {
-  margin-top: 20px;
-}
-
-.projects-section h2 {
-  font-size: 1.5rem;
+.profile-menu button {
+  background-color: #052950;
   color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px; /* Bordas arredondadas suaves para os botões */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.profile-menu button:hover {
+  background-color: #0056b3;
 }
 
 /* Estilo do popup */
@@ -69,45 +80,71 @@
 }
 
 .popup {
-  background: white;
-  color: black; 
+  background: rgb(218, 218, 218);
+  color: black;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 300px;
+  width: 100%;
+  max-width: 500px;  /* Limita a largura do popup para que ele não fique largo demais */
   text-align: center;
+  box-sizing: border-box;  /* Faz com que o padding não aumente a largura total */
 }
 
 .popup h2 {
   margin-bottom: 1rem;
+  font-size: 1.3rem;
 }
 
-.popup input {
+.popup input,
+.popup textarea {
   width: 100%;
   margin: 0.5rem 0;
-  padding: 0.5rem;
+  padding: 0.8rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box;  /* Garante que o padding não afete o tamanho do input */
+}
+
+.popup input:focus,
+.popup textarea:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 .popup-buttons {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   margin-top: 1rem;
 }
 
 .popup-buttons button {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  max-width: 150px;
+  margin-top: 10px;
+  background-color: #052950;
+  color: white;
 }
 
 .popup-buttons button:hover {
-  background-color: #f0f0f0;
+  background-color: #0056b3;  /* Cor escura para o hover */
 }
 
-/* Outros estilos gerais */
+.popup-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+/* Estilo de navegação e lista */
 ul {
   display: flex;
   justify-content: space-between;
@@ -118,6 +155,7 @@ ul {
 
 h1 {
   color: white;
+  font-size: 2rem;
 }
 
 nav {
@@ -126,7 +164,6 @@ nav {
 
 li {
   padding: 15px;
-  display: inline-block;
 }
 
 li a {
@@ -135,12 +172,8 @@ li a {
   text-align: center;
 }
 
-li a:visited {
-  color: white;
-}
-
 li a:hover {
-  text-decoration: none;
+  color: #007bff;
 }
 
 li:active,
@@ -149,21 +182,20 @@ li:focus {
   outline: none;
 }
 
+/* Media Queries para dispositivos móveis */
 @media (max-width: 768px) {
-  ul {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    max-width: 90%;
+  }
+
+  .profile-menu {
     flex-direction: column;
     align-items: center;
   }
 
-  .left-nav,
-  .right-nav {
-    width: 100%;
-    text-align: center;
-  }
-
-  li {
-    width: 100%;
-    text-align: center;
+  .popup {
+    width: 90%;
   }
 }
-

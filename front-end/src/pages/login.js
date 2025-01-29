@@ -26,11 +26,11 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Supondo que o backend retorne o id_utilizador junto com o token
+        // Supondo que o backend retorne o token e o id_utilizador
         const user = { 
           token: data.token, 
           email, 
-          id_utilizador: data.id_utilizador, // Aqui, você adiciona o id_utilizador
+          id_utilizador: data.id_utilizador, 
         };
 
         // Salvar os dados no localStorage

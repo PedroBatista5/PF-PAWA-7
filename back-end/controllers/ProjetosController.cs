@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Services;
 using System.Linq;
 using System.Security.Claims;
@@ -10,10 +12,13 @@ namespace SeuProjeto.Controllers
     public class ProjetoController : ControllerBase
     {
         private readonly ProjetosService _projetosService;
+        private readonly AppDbContext _context;
 
-        public ProjetoController(ProjetosService projetosService)
+
+        public ProjetoController(ProjetosService projetosService, AppDbContext context)
         {
             _projetosService = projetosService;
+            _context = context;
         }
 
         [HttpPost]
@@ -22,17 +27,16 @@ namespace SeuProjeto.Controllers
         {
             try
             {
-                // Obtém o ID do usuário do token
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id_utilizador");
+                Console.WriteLine("Dados recebidos do Frontend: " + System.Text.Json.JsonSerializer.Serialize(projeto));
+
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                 {
                     return Unauthorized("Usuário não autenticado.");
                 }
+                int userId = int.Parse(userIdClaim.Value);
+                projeto.Id_utilizador = userId;
 
-                // Atribui o ID do usuário logado ao projeto
-                projeto.Id_utilizador = int.Parse(userIdClaim.Value);
-
-                // Verificação para garantir que o Id_utilizador está sendo atribuído corretamente
                 if (projeto.Id_utilizador == 0)
                 {
                     return BadRequest("ID do usuário não encontrado.");
@@ -68,16 +72,70 @@ namespace SeuProjeto.Controllers
             try
             {
                 var projeto = await _projetosService.ObterProjetoPorId(id);
+
                 if (projeto == null)
                 {
                     return NotFound(new { mensagem = "Projeto não encontrado" });
                 }
-                return Ok(projeto);
+
+                if (projeto.Utilizador == null)
+                {
+                    return NotFound(new { mensagem = "Usuário não encontrado para o projeto" });
+                }
+
+                var projetoComCriador = new
+                {
+                    projeto.Id_projetos,
+                    projeto.Titulo_projetos,
+                    projeto.Preco,
+                    projeto.Descricao_projeto,
+                    NomeCriador = projeto.Utilizador.Nome
+                };
+
+                return Ok(projetoComCriador);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Erro ao buscar o projeto: {ex.Message}");
             }
         }
+
+        [Authorize] 
+        [HttpGet("meusprojetos")]
+        public async Task<IActionResult> ObterProjetosContratados()
+        {
+            try
+            {
+
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+
+                var projetosContratados = await _context.Contratacoes
+                    .Where(c => c.Id_utilizador == userId)  
+                    .Include(c => c.Projeto) 
+                    .ThenInclude(p => p.Utilizador)
+                    .ToListAsync();
+
+                if (projetosContratados == null || !projetosContratados.Any())
+                {
+                    return NotFound(new { Message = "Nenhum projeto encontrado." });
+                }
+
+                return Ok(projetosContratados.Select(c => new
+                {
+                    c.Id_contratacao,
+                    c.Projeto.Titulo_projetos,
+                    c.Projeto.Descricao_projeto,
+                    c.Projeto.Preco,
+                    c.Status_contratacao,
+                    Cliente = c.Projeto.Utilizador.Nome + " " + c.Projeto.Utilizador.Sobrenome
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Erro ao processar a solicitação: " + ex.Message });
+            }
+        }
+
     }
 }

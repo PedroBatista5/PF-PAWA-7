@@ -56,17 +56,14 @@ namespace Backend.Services
 
     public async Task<(bool success, string message, string token, int id_utilizador)> LoginAsync(string email, string password)
     {
-        // Procurar o utilizador pelo email
         var utilizador = await _context.Utilizadores
             .FirstOrDefaultAsync(u => u.Email == email);
 
-        // Verificar se o utilizador existe
         if (utilizador == null)
         {
             return (false, "Usuário não encontrado.", null, 0);
         }
 
-        // Verificar a senha
         bool passwordMatches = BCrypt.Net.BCrypt.Verify(password, utilizador.Password);
         if (!passwordMatches)
         {
@@ -74,12 +71,7 @@ namespace Backend.Services
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var randomKey = new byte[32]; // 256 bits = 32 bytes
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(randomKey);  // Preenche a chave com valores aleatórios
-        }
-        var base64Key = Convert.ToBase64String(randomKey);  // Converte para Base64
+        var secretKey = Encoding.UTF8.GetBytes("MINHA_CHAVE_SUPER_SECRETA_QUE_TEM_32_BYTES!"); // Chave de 256 bits
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -88,14 +80,13 @@ namespace Backend.Services
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, utilizador.Id_utilizador.ToString()),
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, utilizador.Email)
             }),
-            Expires = DateTime.UtcNow.AddHours(1), // Tempo de expiração do token
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(randomKey), SecurityAlgorithms.HmacSha256Signature)
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
         };
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
 
-
-        // Retornar sucesso, mensagem, token e id do utilizador
         return (true, "Login bem-sucedido.", tokenString, utilizador.Id_utilizador);
     }
 
@@ -111,13 +102,29 @@ namespace Backend.Services
             return await _context.Utilizadores.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<(bool success, string message)> AtualizarUsuarioAsync(Utilizador utilizador)
-    {
-        _context.Utilizadores.Update(utilizador);
-        await _context.SaveChangesAsync();
+        public async Task<string> UpdateProfileAsync(int userId, string descricaoInfo, string servicos)
+        {
+            var user = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.Id_utilizador == userId);
 
-        return (true, "Usuário atualizado com sucesso.");
-    }
+            if (user == null)
+            {
+                return "Usuário não encontrado.";
+            }
+
+            user.Descricao_info = descricaoInfo;
+            user.Servicos = servicos;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return "Dados atualizados com sucesso!";
+            }
+            catch (System.Exception ex)
+            {
+                return "Erro ao atualizar dados: " + ex.Message;
+            }
+        }
 
 
  }

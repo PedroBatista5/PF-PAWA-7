@@ -17,37 +17,36 @@ public class ContratacaoController : ControllerBase
         _contratacaoService = contratacaoService;
     }
 
-[HttpPost]
-public async Task<IActionResult> CriarContratacao([FromBody] Contratacao contratacao)
-{
-    // Verifique os dados recebidos
-    Console.WriteLine($"Dados recebidos: {System.Text.Json.JsonSerializer.Serialize(contratacao)}");
+    [HttpPost]
+    public async Task<IActionResult> CriarContratacao([FromBody] Contratacao contratacao)
+    {
+        Console.WriteLine($"Dados recebidos: {System.Text.Json.JsonSerializer.Serialize(contratacao)}");
 
-    if (contratacao == null || contratacao.Id_utilizador == 0 || contratacao.Id_projetos == 0)
-    {
-        return BadRequest("Cliente e Projeto são obrigatórios.");
+        if (contratacao == null || contratacao.Id_utilizador == 0 || contratacao.Id_projetos == 0)
+        {
+            return BadRequest("Id_utilizador e Id_projetos são obrigatórios.");
+        }
+
+        try
+        {
+            var novaContratacao = await _contratacaoService.CriarContratacaoAsync(
+                contratacao.Id_utilizador,
+                contratacao.Id_projetos,
+                contratacao.Status_contratacao
+            );
+
+            return Ok(new { Message = "Contratação criada com sucesso!", contratacao = novaContratacao });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Erro no servidor: " + ex.Message);
+        }
     }
 
-    try
-    {
-        // Continue com a lógica de criação da contratação
-        var novaContratacao = await _contratacaoService.CriarContratacaoAsync(
-            contratacao.Id_utilizador,
-            contratacao.Id_projetos,
-            contratacao.Status_contratacao
-        );
-
-        return Ok(new { Message = "Contratação criada com sucesso!", contratacao = novaContratacao });
-    }
-    catch (ArgumentException ex)
-    {
-        return BadRequest(ex.Message);
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, "Erro no servidor: " + ex.Message);
-    }
-}
 
 }
 
