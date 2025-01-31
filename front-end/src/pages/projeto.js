@@ -8,13 +8,12 @@ const Projetos = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       const token = localStorage.getItem("authToken");
-      
-  
+
       if (!token) {
         alert("Usuário não autenticado.");
         return;
       }
-  
+
       try {
         const response = await fetch("http://localhost:5289/api/projeto/meusprojetos", {
           method: "GET",
@@ -23,11 +22,9 @@ const Projetos = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
-          
-          console.log("Dados recebidos:", data);  // Adicione este log para depuração
           setProjects(data);
         } else {
           alert("Erro ao carregar projetos contratados.");
@@ -39,9 +36,39 @@ const Projetos = () => {
         setIsLoading(false);
       }
     };
-  
+
     fetchProjects();
   }, []);
+
+  const atualizarStatus = async (id_contratacao, novoStatus) => {
+    const token = localStorage.getItem("authToken");
+  
+    try {
+      const response = await fetch(`http://localhost:5289/api/contratacao/${id_contratacao}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          Id_contratacao: id_contratacao,
+          Status_contratacao: novoStatus
+        }),
+      });
+  
+      if (response.ok) {
+        alert("Status atualizado com sucesso! ✅"); // Mensagem de sucesso
+        window.location.reload(); // Recarrega a página para atualizar a lista
+      } else {
+        alert("Erro ao atualizar o status. ❌"); // Mensagem de erro
+      }
+    } catch (error) {
+      console.error("Erro de conexão:", error);
+      alert("Erro ao conectar com o servidor. ❌");
+    }
+  };
+  
+  
   
 
   return (
@@ -51,15 +78,19 @@ const Projetos = () => {
         <p>Carregando projetos...</p>
       ) : (
         <div className="projects-list">
-            {projects.map((contratacao) => (
+          {projects.map((contratacao) => (
             <div key={contratacao.id_contratacao} className="project-card">
-                <h3>{contratacao.titulo_projetos}</h3>
-                <p>{contratacao.descricao_projeto}</p>
-                <p>Preço: R${contratacao.preco}</p>
-                <p>Status: {contratacao.status_contratacao}</p>
-
+              <h3>{contratacao.titulo_projetos}</h3>
+              <p>{contratacao.descricao_projeto}</p>
+              <p>Preço: R${contratacao.preco}</p>
+              <p>Status: {contratacao.status_contratacao}</p>
+              {contratacao.status_contratacao !== "Concluído" && (
+                <button onClick={() => atualizarStatus(contratacao.id_contratacao, "Concluída")}>
+                  Marcar como Concluído
+                </button>
+              )}
             </div>
-            ))}
+          ))}
         </div>
       )}
     </div>

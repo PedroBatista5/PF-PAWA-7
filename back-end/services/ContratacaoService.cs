@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 public interface IContratacaoService
 {
     Task<Contratacao> CriarContratacaoAsync(int Id_utilizador, int Id_projetos, string statusContratacao);
+    Task<Contratacao> ObterContratacaoPorIdAsync(int id);  // Adicionado
+    Task AtualizarContratacaoAsync(Contratacao contratacao); // Adicionado
 }
 
 public class ContratacaoService : IContratacaoService
 {
     private readonly AppDbContext _context;
+    
 
     public ContratacaoService(AppDbContext context)
     {
@@ -48,4 +52,22 @@ public class ContratacaoService : IContratacaoService
 
         return contratacao;
     }
+
+    public async Task<Contratacao> ObterContratacaoPorIdAsync(int id)
+    {
+        return await _context.Contratacoes.FindAsync(id);
+    }
+    public async Task AtualizarContratacaoAsync(Contratacao contratacao)
+    {
+        var contratacaoExistente = await _context.Contratacoes.FindAsync(contratacao.Id_contratacao);
+
+        if (contratacaoExistente != null)
+        {
+            contratacaoExistente.Status_contratacao = contratacao.Status_contratacao;
+            _context.Entry(contratacaoExistente).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+
 }

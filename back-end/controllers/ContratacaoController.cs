@@ -47,6 +47,28 @@ public class ContratacaoController : ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> AtualizarStatus(int id, [FromBody] Contratacao contratacaoAtualizada)
+    {
+        if (contratacaoAtualizada == null || id != contratacaoAtualizada.Id_contratacao)
+        {
+            return BadRequest("Dados inválidos.");
+        }
+
+        var contratacaoExistente = await _contratacaoService.ObterContratacaoPorIdAsync(id);
+        
+        if (contratacaoExistente == null)
+        {
+            return NotFound("Contratação não encontrada.");
+        }
+
+        await _contratacaoService.AtualizarContratacaoAsync(contratacaoAtualizada);
+
+        return Ok("Status atualizado com sucesso.");
+    }
+
+
+
 
 }
 
