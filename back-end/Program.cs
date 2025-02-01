@@ -27,9 +27,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Adiciona autenticação JWT com chave fixa
-// Chave secreta com 256 bits (32 bytes)
-var secretKey = Encoding.UTF8.GetBytes("MINHA_CHAVE_SUPER_SECRETA_QUE_TEM_32_BYTES!"); // 32 caracteres
+
+var secretKey = Encoding.UTF8.GetBytes("MINHA_CHAVE_SUPER_SECRETA_QUE_TEM_32_BYTES!"); 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -52,9 +51,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseRouting(); // Altere para que UseRouting venha antes de UseAuthentication/UseAuthorization
-app.UseAuthentication(); // Adiciona autenticação
-app.UseAuthorization();  // Adiciona autorização
+app.UseRouting(); 
+app.UseAuthentication(); 
+app.UseAuthorization(); 
 
 app.MapControllers();
 

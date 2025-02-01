@@ -86,9 +86,9 @@ const ProfilePage = () => {
   
     try {
       const token = localStorage.getItem("authToken");
-      const user = JSON.parse(localStorage.getItem("userData")); // Para obter a ID do usuário
+      const user = JSON.parse(localStorage.getItem("userData")); 
       const response = await fetch(`http://localhost:5289/api/utilizador/${user.id_utilizador}`, {
-        method: "PUT", // Usar PUT corretamente
+        method: "PUT", 
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -159,7 +159,7 @@ const ProfilePage = () => {
         return;
       }
 
-      const data = await response.json().catch(() => null); // Evita erro de JSON vazio
+      const data = await response.json().catch(() => null); 
       console.log("Projeto criado com sucesso:", data);
       alert("Projeto criado com sucesso!");
       setIsCreateProjectPopupOpen(false);

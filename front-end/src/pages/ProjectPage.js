@@ -4,11 +4,11 @@ import "../styles/projectpage.css";
 import { useAuth } from "../contexts/AuthContext";
 
 const ProjectPage = () => {
-  const { id } = useParams(); // Captura o parâmetro da URL
+  const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Para redirecionar após contratar
-  const { currentUser } = useAuth(); // Usa o hook para acessar o contexto de autenticação
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -36,7 +36,7 @@ const ProjectPage = () => {
   }, [id, currentUser]);
 
   const handleContratar = async () => {
-    console.log("currentUser:", currentUser); // Verifique o conteúdo de currentUser
+    console.log("currentUser:", currentUser);
     if (!currentUser || !currentUser.id_utilizador) {
       alert("É necessário estar autenticado para contratar um projeto.");
       return;

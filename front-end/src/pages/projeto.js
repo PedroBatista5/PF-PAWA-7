@@ -57,10 +57,10 @@ const Projetos = () => {
       });
   
       if (response.ok) {
-        alert("Status atualizado com sucesso! ✅"); // Mensagem de sucesso
-        window.location.reload(); // Recarrega a página para atualizar a lista
+        alert("Status atualizado com sucesso! "); 
+        window.location.reload(); 
       } else {
-        alert("Erro ao atualizar o status. ❌"); // Mensagem de erro
+        alert("Erro ao atualizar o status. ");
       }
     } catch (error) {
       console.error("Erro de conexão:", error);

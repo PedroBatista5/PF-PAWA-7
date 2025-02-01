@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 public interface IContratacaoService
 {
     Task<Contratacao> CriarContratacaoAsync(int Id_utilizador, int Id_projetos, string statusContratacao);
-    Task<Contratacao> ObterContratacaoPorIdAsync(int id);  // Adicionado
-    Task AtualizarContratacaoAsync(Contratacao contratacao); // Adicionado
+    Task<Contratacao> ObterContratacaoPorIdAsync(int id);
+    Task AtualizarContratacaoAsync(Contratacao contratacao); 
 }
 
 public class ContratacaoService : IContratacaoService
@@ -23,9 +23,7 @@ public class ContratacaoService : IContratacaoService
 
     public async Task<Contratacao> CriarContratacaoAsync(int Id_utilizador, int Id_projetos, string statusContratacao)
     {
-        // Aqui você pode adicionar qualquer lógica de validação ou outras verificações
 
-        // Verificar se o cliente e o projeto existem
         var cliente = await _context.Utilizadores.FindAsync(Id_utilizador);
         var projeto = await _context.Projetos.FindAsync(Id_projetos);
 

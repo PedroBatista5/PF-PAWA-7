@@ -5,8 +5,8 @@ public class Projetos
     public string Titulo_projetos { get; set; }
     public double Preco { get; set; }
     public string Descricao_projeto { get; set; }
-    public int Id_utilizador { get; set; }  // Esse é o ID do usuário que está criando o projeto
+    public int Id_utilizador { get; set; }  
     
-    public Utilizador Utilizador { get; set; }  // Relacionamento de navegação com Utilizadores
+    public Utilizador Utilizador { get; set; }  
 }
 

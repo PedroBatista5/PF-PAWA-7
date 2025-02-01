@@ -29,34 +29,34 @@
 .projects-list {
   margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cards mais largos */
-  gap: 24px; /* Maior espaçamento entre os cards */
-  padding: 20px; /* Espaço nas laterais */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 20px; 
 }
 
 .project-card {
   border: none;
-  border-radius: 16px; /* Cantos arredondados */
+  border-radius: 16px;
   padding: 20px;
-  background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Gradiente suave */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); 
   text-decoration: none;
   color: #333;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  flex-direction: column; /* Conteúdo empilhado */
+  flex-direction: column; 
   justify-content: space-between;
 }
 
 .project-card:hover {
-  transform: translateY(-8px); /* Elevação ao passar o mouse */
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Sombra mais forte */
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
 }
 
 .project-card h3 {
   margin: 0 0 12px;
-  font-size: 1.5rem; /* Título maior */
-  color: #052950; /* Azul destaque */
+  font-size: 1.5rem; 
+  color: #052950; 
 }
 
 .project-card p {
@@ -67,7 +67,7 @@
 }
 
 .project-card p strong {
-  color: #333; /* Destaque para texto em negrito */
+  color: #333; 
 }
 
 /* Seção do rodapé do card */
@@ -82,7 +82,7 @@
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  background: #052950; /* Botão azul */
+  background: #052950; 
   color: #fff;
   font-size: 0.9rem;
   font-weight: bold;
@@ -91,12 +91,12 @@
 }
 
 .project-footer button:hover {
-  background: #08396e; /* Azul mais escuro ao passar o mouse */
+  background: #08396e; 
 }
 
 /* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
   .projects-list {
-    grid-template-columns: 1fr; /* Um card por linha */
+    grid-template-columns: 1fr; 
   }
 }

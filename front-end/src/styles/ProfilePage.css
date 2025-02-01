@@ -15,11 +15,11 @@
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  background-color: rgb(218, 218, 218);  /* Card branco ao redor das informações */
-  border-radius: 8px;  /* Bordas mais suaves */
+  background-color: rgb(218, 218, 218);  
+  border-radius: 8px; 
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-height: 600px; /* Altura fixa do card para dar a aparência quadrada */
+  max-height: 600px; 
 }
 
 .profile-image-container {
@@ -31,7 +31,7 @@
   margin-top: 10px;
   font-size: 1.6rem;
   font-weight: bold;
-  color: black;  /* Cor preta para o nome, para melhor contraste */
+  color: black; 
 }
 
 .profile-menu {
@@ -45,7 +45,7 @@
 .profile-menu p {
   margin: 5px 0;
   font-size: 1rem;
-  color: black;  /* Texto em preto para maior legibilidade */
+  color: black;  
 }
 
 .profile-menu button {
@@ -53,7 +53,7 @@
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 8px; /* Bordas arredondadas suaves para os botões */
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
   margin-top: 10px;
@@ -86,9 +86,9 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 500px;  /* Limita a largura do popup para que ele não fique largo demais */
+  max-width: 500px; 
   text-align: center;
-  box-sizing: border-box;  /* Faz com que o padding não aumente a largura total */
+  box-sizing: border-box;
 }
 
 .popup h2 {
@@ -105,7 +105,7 @@
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
-  box-sizing: border-box;  /* Garante que o padding não afete o tamanho do input */
+  box-sizing: border-box; 
 }
 
 .popup input:focus,
@@ -135,7 +135,7 @@
 }
 
 .popup-buttons button:hover {
-  background-color: #0056b3;  /* Cor escura para o hover */
+  background-color: #0056b3; 
 }
 
 .popup-buttons button:disabled {

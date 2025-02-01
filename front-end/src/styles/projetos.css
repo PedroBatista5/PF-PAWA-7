@@ -21,26 +21,26 @@
   .project-card h3 {
     margin: 0;
     font-size: 1.2rem;
-    color: #333; /* Garantir que o título seja legível */
+    color: #333;
   }
   
   .project-card p {
     font-size: 1rem;
-    color: #333; /* Garantir que o texto seja legível */
+    color: #333; 
   }
   
   .project-card p:last-child {
     font-weight: bold;
-    color: #333; /* Garantir que o texto final seja legível */
+    color: #333;
   }
   
   .project-card p:hover {
-    color: #0056b3; /* Cor ao passar o mouse */
+    color: #0056b3; 
   }
   
   .projects-page h1 {
     font-size: 2rem;
-    color: #333; /* Garantir que o título da página seja legível */
+    color: #333; 
     text-align: center;
   }
   

@@ -26,19 +26,19 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Supondo que o backend retorne o token e o id_utilizador
+     
         const user = { 
           token: data.token, 
           email, 
           id_utilizador: data.id_utilizador, 
         };
 
-        // Salvar os dados no localStorage
-        localStorage.setItem("authToken", data.token); // Armazenando o token
-        localStorage.setItem("userData", JSON.stringify(user)); // Armazenando todos os dados do usuário
+
+        localStorage.setItem("authToken", data.token); 
+        localStorage.setItem("userData", JSON.stringify(user)); 
         
-        login(user); // Passa as informações para o contexto
-        navigate('/home'); // Redireciona para a página inicial
+        login(user); 
+        navigate('/home');
       } else {
         setErrorMessage(data.Message || 'Erro ao realizar login');
       }

@@ -18,7 +18,7 @@ namespace Backend.Services
 
         public async Task<(bool success, string message)> RegistrarUtilizadorAsync(Utilizador utilizador)
         {
-        // Verificar se o email já existe
+
         var emailExists = await _context.Utilizadores
             .AnyAsync(u => u.Email == utilizador.Email);
 
@@ -27,14 +27,13 @@ namespace Backend.Services
             return (false, "E-mail já registrado.");
         }
 
-        // Verificar se o tipo de utilizador foi fornecido e é válido
         if (string.IsNullOrEmpty(utilizador.TipoUtilizador) || 
             (utilizador.TipoUtilizador != "Freelancer" && utilizador.TipoUtilizador != "Cliente"))
         {
             return (false, "Tipo de utilizador inválido. Deve ser 'Freelancer' ou 'Cliente'.");
         }
 
-        // Caso seja Freelancer, verificar os campos obrigatórios
+
         if (utilizador.TipoUtilizador == "Freelancer")
         {
             if (string.IsNullOrWhiteSpace(utilizador.Descricao_info) || string.IsNullOrWhiteSpace(utilizador.Servicos))
@@ -43,10 +42,10 @@ namespace Backend.Services
             }
         }
 
-        // Criptografar a senha
+
         utilizador.Password = BCrypt.Net.BCrypt.HashPassword(utilizador.Password);
 
-        // Adicionar o utilizador à tabela
+
         await _context.Utilizadores.AddAsync(utilizador);
         await _context.SaveChangesAsync();
 
@@ -71,7 +70,7 @@ namespace Backend.Services
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var secretKey = Encoding.UTF8.GetBytes("MINHA_CHAVE_SUPER_SECRETA_QUE_TEM_32_BYTES!"); // Chave de 256 bits
+        var secretKey = Encoding.UTF8.GetBytes("MINHA_CHAVE_SUPER_SECRETA_QUE_TEM_32_BYTES!");
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -98,7 +97,7 @@ namespace Backend.Services
 
     public async Task<Utilizador> ObterUsuarioPorEmailAsync(string email)
     {
-            // Busca o usuário no banco de dados pelo email
+
             return await _context.Utilizadores.FirstOrDefaultAsync(u => u.Email == email);
     }
 

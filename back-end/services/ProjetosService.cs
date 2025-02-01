@@ -19,13 +19,12 @@ namespace SeuProjeto.Services
         {
             try
             {
-                // Validações iniciais
+
                 if (projeto == null)
                 {
                     throw new ArgumentNullException(nameof(projeto), "O projeto não pode ser nulo.");
                 }
 
-                // Validar os campos obrigatórios
                 if (string.IsNullOrWhiteSpace(projeto.Titulo_projetos) || 
                     string.IsNullOrWhiteSpace(projeto.Descricao_projeto) || 
                     projeto.Id_utilizador == 0)
@@ -33,14 +32,13 @@ namespace SeuProjeto.Services
                     throw new ArgumentException("O título, descrição e ID do utilizador são obrigatórios.");
                 }
 
-                // Verificar se o utilizador existe
+
                 var utilizador = await _context.Utilizadores.FindAsync(projeto.Id_utilizador);
                 if (utilizador == null)
                 {
                     throw new ArgumentException("O utilizador informado não existe.");
                 }
 
-                // Adicionar e salvar o projeto
                 _context.Projetos.Add(projeto);
                 await _context.SaveChangesAsync();
 
@@ -76,7 +74,7 @@ namespace SeuProjeto.Services
                 var contratacoes = await _context.Contratacoes
                                                 .Where(c => c.Id_utilizador == userId)
                                                 .Include(c => c.Projeto)
-                                                .Include(c => c.Projeto.Utilizador)  // Inclui o criador do projeto
+                                                .Include(c => c.Projeto.Utilizador) 
                                                 .ToListAsync();
                 return contratacoes;
             }

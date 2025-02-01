@@ -50,7 +50,7 @@ const Register = () => {
     formData.append('Password', Password);
     formData.append('TipoUtilizador', TipoUtilizador);
 
-    // Só envia os campos adicionais se o tipo de utilizador for Freelancer
+
     if (TipoUtilizador === "Freelancer") {
       formData.append('Descricao_info', Descricao_info);
       formData.append('Servicos', Servicos);
